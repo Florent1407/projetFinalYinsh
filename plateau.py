@@ -126,7 +126,13 @@ class Jeu:
         self.plateau_x = (self.ecran_largeur - self.plateau_largeur) // 1.6
         self.plateau_y = (self.ecran_hauteur - self.plateau_hauteur) // 0.87
         self.paused = False
-        self.pause_button_rect = pygame.Rect(20, 20, 100, 40)  
+        self.pause_button_rect = pygame.Rect(20, 20, 100, 40)
+        pygame.mixer.init()
+        self.game_music = pygame.mixer.music.load('musiques/musique2.mp3')
+
+    def play_game_music(self):
+        pygame.mixer.music.stop()
+        pygame.mixer.music.play(-1)
 
     def charger_fond(self):
         script_dir = os.path.dirname(__file__)
@@ -275,6 +281,7 @@ class Jeu:
         pass
 
     def demarrer(self):
+        self.play_game_music()
         while True:
             self.verifier_evenements()
             self.screen.fill((255, 255, 255))  
