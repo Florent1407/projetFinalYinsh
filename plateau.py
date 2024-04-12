@@ -150,12 +150,14 @@ class Jeu:
         self.screen.blit(label, label_rect)
 
     def afficher_menu_pause(self):
-        pygame.draw.rect(self.screen, (0, 0, 0), (300, 150, 600, 300), 3)  
+        pygame.draw.rect(self.screen, (245, 245, 220), (300, 150, 600, 300))
+        pygame.draw.rect(self.screen, (0, 0, 0), (300, 150, 600, 300), 10)
 
-        pause_font = pygame.font.SysFont(None, 50)
+        pause_font = pygame.font.SysFont(None, 40)
         menu_items = ["Reprendre le jeu", "Recommencer la partie", "Sauvegarder la partie", "Menu principal"]
         for i, item in enumerate(menu_items):
-            pygame.draw.rect(self.screen, (0, 0, 0), (400, 220 + i * 50, 400, 40), 3) 
+            pygame.draw.rect(self.screen, (255, 255, 255), (400, 220 + i * 50, 400, 40))
+            pygame.draw.rect(self.screen, (0, 0, 0), (400, 220 + i * 50, 400, 40), 3)
             label = pause_font.render(item, True, (0, 0, 0))
             label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 240 + i * 50))
             self.screen.blit(label, label_rect)
