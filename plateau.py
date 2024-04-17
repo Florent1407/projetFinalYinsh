@@ -3,6 +3,7 @@ import sys
 import os
 import math
 import menu
+import options
 
 class Plateau:
     def __init__(self, largeur, hauteur):
@@ -129,9 +130,12 @@ class Jeu:
         self.pause_button_rect = pygame.Rect(20, 20, 100, 40)
         pygame.mixer.init()
         self.game_music = pygame.mixer.music.load('musiques/musique2.mp3')
+        option_instance = options.Options(self.screen, self.ecran_largeur, self.ecran_hauteur)
+        self.volume = option_instance.get_volume()
 
     def play_game_music(self):
         pygame.mixer.music.stop()
+        pygame.mixer.music.set_volume(self.volume)
         pygame.mixer.music.play(-1)
 
     def charger_fond(self):
@@ -150,14 +154,21 @@ class Jeu:
         self.screen.blit(label, label_rect)
 
     def afficher_menu_pause(self):
-        pygame.draw.rect(self.screen, (0, 0, 0), (300, 150, 600, 300), 3)  
+        dark_overlay = pygame.Surface((self.ecran_largeur, self.ecran_hauteur))
+        dark_overlay.set_alpha(128)
+        dark_overlay.fill((0, 0, 0))
+        self.screen.blit(dark_overlay, (0, 0))
 
-        pause_font = pygame.font.SysFont(None, 50)
-        menu_items = ["Reprendre le jeu", "Recommencer la partie", "Sauvegarder la partie", "Menu principal"]
+        pygame.draw.rect(self.screen, (245, 245, 220), (300, 150, 600, 300))
+        pygame.draw.rect(self.screen, (0, 0, 0), (300, 150, 600, 300), 10)
+
+        pause_font = pygame.font.SysFont(None, 40)
+        menu_items = ["Reprendre le jeu", "Recommencer la partie", "Sauvegarder la partie", "Options", "Menu principal"]
         for i, item in enumerate(menu_items):
-            pygame.draw.rect(self.screen, (0, 0, 0), (400, 220 + i * 50, 400, 40), 3) 
+            pygame.draw.rect(self.screen, (255, 255, 255), (400, 180 + i * 50, 400, 40))  # Au lieu de 220 + i * 50
+            pygame.draw.rect(self.screen, (0, 0, 0), (400, 180 + i * 50, 400, 40), 3)
             label = pause_font.render(item, True, (0, 0, 0))
-            label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 240 + i * 50))
+            label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 200 + i * 50))
             self.screen.blit(label, label_rect)
 
     def verifier_evenements(self):
@@ -174,7 +185,7 @@ class Jeu:
                         self.trouver_cellule_clicquee(x, y)
 
                     if self.paused:
-                        menu_items_rects = [pygame.Rect(400, 220 + i * 50, 400, 40) for i in range(4)]
+                        menu_items_rects = [pygame.Rect(400, 180 + i * 50, 400, 40) for i in range(5)]
                         for i, rect in enumerate(menu_items_rects):
                             if rect.collidepoint(x, y):
                                 if i == 0:  
@@ -183,7 +194,9 @@ class Jeu:
                                     self.recommencer_partie()
                                 elif i == 2:  
                                     self.sauvegarder_partie()
-                                elif i == 3: 
+                                elif i == 3:
+                                    self.afficher_options()
+                                elif i == 4: 
                                     self.retour_menu_principal()
 
     def trouver_cellule_clicquee(self, x, y):
@@ -275,9 +288,16 @@ class Jeu:
     def sauvegarder_partie(self):
         pass
 
+    def afficher_options(self):
+        options_instance = options.Options(self.screen, self.ecran_largeur, self.ecran_hauteur)
+        options_instance.run()
+        self.volume = options_instance.get_volume()
+
     def retour_menu_principal(self):
         menu_instance = menu.Menu(self.screen, self.ecran_largeur, self.ecran_hauteur)
         menu_instance.run()
+        options_instance = options.Options(self.screen, self.ecran_largeur, self.ecran_hauteur)
+        self.volume = options_instance.get_volume()
         pass
 
     def demarrer(self):
