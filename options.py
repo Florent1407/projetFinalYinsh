@@ -14,6 +14,7 @@ class Options:
         self.show_options = False
         self.bold_font = pygame.font.Font(None, 48)
         self.volume = self.volume_slider.volume
+        self.quit_options = False
 
     def get_volume(self):
         return self.volume
@@ -41,6 +42,7 @@ class Options:
             pygame.draw.rect(self.window, border_color, button_rect, 3, border_radius=radius)
             if click[0] == 1 and action is not None:
                 if action == "retour":
+                    self.quit_options = True
                     return True
 
         self.draw_text(text, (0, 0, 0), x + width / 2, y + height / 2)
@@ -57,7 +59,7 @@ class Options:
             self.draw_text("Options", (255, 255, 255), self.width // 2, 80, font=self.bold_font)
 
             volume_text_x = self.volume_slider.slider_x + self.volume_slider.slider_width // 2
-            volume_text_y = self.volume_slider.slider_y - 20
+            volume_text_y = self.volume_slider.slider_y - 70
             self.draw_text("Volume Musiques", (255, 255, 255), volume_text_x, volume_text_y)
 
             self.volume_slider.draw()
@@ -91,7 +93,7 @@ class VolumeSlider:
         self.slider_width = 300
         self.slider_height = 30
         self.slider_x = (width - self.slider_width) // 2
-        self.slider_y = height // 2
+        self.slider_y = height // 2 - 100
         self.slider_color = (255, 255, 255, 128)
         self.slider_border_color = (0, 0, 0)
         self.slider_radius = 10
