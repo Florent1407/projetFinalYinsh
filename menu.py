@@ -1,10 +1,10 @@
 import pygame
 import sys
 import os
-import plateau
+from vsOrdi import GameVsComputer
+import plateau as Board
 import pygame.mixer
 from options import Options
-
 
 class SubMenu:
     def __init__(self, window, width, height):
@@ -35,11 +35,12 @@ class SubMenu:
             pygame.draw.rect(self.window, border_color, button_rect, 3, border_radius=radius)
             if click[0] == 1 and action is not None:
                 if action == "local":
-                    jeu_instance = plateau.Jeu()
-                    jeu_instance.demarrer()
+                    game_instance = Board.Game()
+                    game_instance.start()
 
-                elif action == "ordinateur":
-                    print("Jouer contre l'ordinateur")
+                elif action == "local_ordi":
+                    game_instance = GameVsComputer()
+                    game_instance.start()
 
         self.draw_text(text, (0, 0, 0), x + width / 2, y + height / 2)
 
@@ -84,6 +85,7 @@ class Menu:
         self.submenu = SubMenu(window, width, height)
         self.show_submenu = False
         self.options = Options(window, width, height)
+        self.show_options = False
         pygame.mixer.init()
         self.menu_music = pygame.mixer.music.load('musiques/musique1.mp3')
 
@@ -99,7 +101,7 @@ class Menu:
     def draw_button(self, text, x, y, width, height, background_color, border_color, action=None, radius=0):
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
-
+        
         button_surface = pygame.Surface((width, height), pygame.SRCALPHA)
         pygame.draw.rect(button_surface, background_color, button_surface.get_rect(), border_radius=radius)
 
@@ -122,7 +124,6 @@ class Menu:
         self.draw_text(text, (0, 0, 0), x + width / 2, y + height / 2)
 
     def run(self):
-        import plateau
         button_width = 250
         button_height = 50
         button_padding = 20
@@ -146,14 +147,13 @@ class Menu:
                 continue
 
             if self.options.show_options:
-                self.options.draw()
-                if self.options.show_options == False:
+                if self.options.draw():
                     self.options.show_options = False
                 pygame.display.update()
                 continue
 
             title_text = "YINSH"
-            title_color = (255, 255, 255)
+            title_color = (255, 255, 255) 
             title_size = 100
             title_font = pygame.font.Font(None, title_size)
             title_x = self.width // 2

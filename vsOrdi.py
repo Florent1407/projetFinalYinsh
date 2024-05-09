@@ -2,6 +2,7 @@ import pygame
 import sys
 import os
 import math
+import random
 import menu
 import options
 
@@ -58,25 +59,22 @@ class Board:
         self.points.clear()
         self.place_points()
 
-
 class Pion:
     def __init__(self, player, color):
-        self.player = player
-        self.color = color
+        self.joueur = player
+        self.couleur = color
 
-class Game:
+class GameVsComputer:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((1200, 700))
         pygame.display.set_caption("Plateau de Jeu")
         self.font = pygame.font.SysFont(None, 36)
-        self.board_wallpaper()
+        self.board_wallpaper() 
         self.board = Board(10.1, 18)
         self.indexPosition={}
-        self.ecran_largeur = 1200
-        self.ecran_hauteur = 700
         self.position_coordinates={}
-        self.positions_clics = [(559, 141), (638, 138),
+        self.positions_clics = [(559, 141), (638, 138), 
                                 (515, 160), (598, 160), (678, 159),
                                 (476, 185), (556, 181), (639, 181), (718, 182),
                                 (437, 208), (517, 205), (598, 204), (680, 205), (758, 204),
@@ -119,8 +117,8 @@ class Game:
         self.board.place_points()
         self.pawn_per_player = 5
         self.place_markers = {1: False, 2: False}
-        self.color_player_1 = (189, 61, 61)
-        self.color_player_2 = (99, 99, 99)
+        self.color_player_1 = (189, 61, 61)  
+        self.color_player_2 = (99, 99, 99)  
         self.current_player = 1
         self.pawn_on_board = {1: 0, 2: 0}
         self.board_width = self.board.width * 50
@@ -132,13 +130,10 @@ class Game:
         self.pause_button_rect = pygame.Rect(20, 20, 100, 40)
         pygame.mixer.init()
         self.game_music = pygame.mixer.music.load('musiques/musique2.mp3')
-        option_instance = options.Options(self.screen, self.screen_width, self.screen_height)
-        self.volume = option_instance.get_volume()
         self.position_cells()
 
     def play_game_music(self):
         pygame.mixer.music.stop()
-        pygame.mixer.music.set_volume(self.volume)
         pygame.mixer.music.play(-1)
 
     def board_wallpaper(self):
@@ -214,6 +209,18 @@ class Game:
                                 elif i == 4: 
                                     self.return_main_menu()
 
+
+    def computer(self):
+        if self.pawn_on_board[2] >= self.pawn_per_player:
+            return
+
+        available_cells = [(row_index, col_index) for row_index, row in enumerate(self.listPplateau) for col_index, cell in enumerate(row) if cell == 0]
+        if available_cells:
+            row_index, col_index = random.choice(available_cells)
+            self.listPplateau[row_index][col_index] = 2
+            self.pawn_on_board[2] += 1
+            self.current_player = 1
+
     def find_clicked_cell(self, x, y):
         hitbox_taille = 10
         for key, value in self.indexPosition.items():
@@ -225,9 +232,9 @@ class Game:
                 self.place_pawn() 
                 self.place_markers_on_board()
                 #self.deplacement()
-                # print("Clic dans la cellule", value)
-        
-                    
+            elif self.current_player == 2:
+                self.computer()
+
     def draw_pawn(self):
         pawn_ray = 15
         pawn_thickness = 2
@@ -247,7 +254,7 @@ class Game:
                         i,j=key
                         if i==row and j==cell:
                             x,y=value
-                            pygame.draw.circle(self.screen, self.color_player_2, (x, y), pawn_ray, pawn_thickness)  
+                            pygame.draw.circle(self.screen, self.color_player_2, (x, y), pawn_ray, pawn_thickness)
 
     def place_pawn(self):
         row,cols=self.clic_value
@@ -287,7 +294,6 @@ class Game:
                             pygame.draw.circle(self.screen, self.color_player_2, (x, y), radius_marker, marker_thickness)
                             pygame.draw.circle(self.screen, self.color_player_2, (x, y), pawn_ray, pawn_thickness)
 
-
     def place_markers_on_board(self):
         row,cols=self.clic_value
         if self.pawn_on_board[self.current_player] < self.pawn_per_player:
@@ -307,7 +313,6 @@ class Game:
                 self.listPplateau[row][cols] = 4
                 self.place_markers[2] = True
                 self.place_markers[1] = False
-
 
     def draw_solo_marqueur(self):
         radius_marker = 9
@@ -385,8 +390,6 @@ class Game:
     def return_main_menu(self):
         menu_instance = menu.Menu(self.screen, self.screen_width, self.screen_height)
         menu_instance.run()
-        options_instance = options.Options(self.screen, self.screen_width, self.screen_height)
-        self.volume = options_instance.get_volume()
         pass
 
     def draw_cells(self):
@@ -471,5 +474,5 @@ class Game:
 
 
 if __name__ == "__main__":
-    game = Game()
+    game = GameVsComputer()
     game.start()

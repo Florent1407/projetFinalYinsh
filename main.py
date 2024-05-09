@@ -6,17 +6,12 @@ import plateau
 def main():
     pygame.init()
 
-    info = pygame.display.Info()
-    width, height = info.current_w, info.current_h
-
-    window = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
-
-    menuinstance = menu.Menu(window, width, height)
+    menuinstance = menu.Menu(pygame.display.setmode((1100, 700)), 1100, 700)
     startgame = menuinstance.run()
 
     if startgame:
-        jeuinstance = plateau.Jeu()
-        jeuinstance.demarrer()
+        gameInstance = plateau.Game()
+        gameInstance.start()
 
     pygame.quit()
     sys.exit()
