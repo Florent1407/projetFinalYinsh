@@ -444,6 +444,10 @@ class Game:
 
     def start(self):
         self.play_game_music()
+        pause_font = pygame.font.SysFont(None, 30)
+        pause_text = pause_font.render("Pause", True, (0, 0, 0))
+        pause_text_rect = pause_text.get_rect(center=self.pause_button_rect.center)
+
         while True:
             self.check_events()
             self.screen.fill((255, 255, 255))
@@ -458,11 +462,11 @@ class Game:
                 self.draw_marker()
                 self.draw_solo_marqueur()
 
-                pygame.draw.rect(self.screen, (0, 0, 0), self.pause_button_rect)
-                pause_font = pygame.font.SysFont(None, 30)
-                label = pause_font.render("Pause", True, (0, 0, 0))
-                label_rect = label.get_rect(center=self.pause_button_rect.center)
-                self.screen.blit(label, label_rect)
+                pygame.draw.rect(self.screen, (245, 245, 220), self.pause_button_rect)
+                pygame.draw.rect(self.screen, (0, 0, 0), self.pause_button_rect, 2)
+
+                self.screen.blit(pause_text, pause_text_rect)
+
             pygame.display.flip()
 
 
