@@ -151,7 +151,7 @@ class Menu:
             if self.options.show_options:
                 self.options.draw()
                 if self.options.show_options == False:
-                self.options.draw()
+                    self.options.draw()
                 if self.options.show_options == False:
                     self.options.show_options = False
                 pygame.display.update()
