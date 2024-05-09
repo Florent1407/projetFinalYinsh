@@ -4,6 +4,7 @@ import os
 import math
 import menu
 import options
+import options
 
 class Board:
     def __init__(self, width, height):
@@ -167,10 +168,15 @@ class Game:
 
         pause_font = pygame.font.SysFont(None, 40)
         menu_items = ["Reprendre le jeu", "Recommencer la partie", "Sauvegarder la partie", "Options", "Menu principal"]
+        pause_font = pygame.font.SysFont(None, 40)
+        menu_items = ["Reprendre le jeu", "Recommencer la partie", "Sauvegarder la partie", "Options", "Menu principal"]
         for i, item in enumerate(menu_items):
             pygame.draw.rect(self.screen, (255, 255, 255), (400, 180 + i * 50, 400, 40))  # Au lieu de 220 + i * 50
             pygame.draw.rect(self.screen, (0, 0, 0), (400, 180 + i * 50, 400, 40), 3)
+            pygame.draw.rect(self.screen, (255, 255, 255), (400, 180 + i * 50, 400, 40))  # Au lieu de 220 + i * 50
+            pygame.draw.rect(self.screen, (0, 0, 0), (400, 180 + i * 50, 400, 40), 3)
             label = pause_font.render(item, True, (0, 0, 0))
+            label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 200 + i * 50))
             label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 200 + i * 50))
             self.screen.blit(label, label_rect)
 
@@ -200,6 +206,7 @@ class Game:
                         self.find_clicked_cell(x, y)
 
                     if self.paused:
+                        menu_items_rects = [pygame.Rect(400, 180 + i * 50, 400, 40) for i in range(5)]
                         menu_items_rects = [pygame.Rect(400, 180 + i * 50, 400, 40) for i in range(5)]
                         for i, rect in enumerate(menu_items_rects):
                             if rect.collidepoint(x, y):
