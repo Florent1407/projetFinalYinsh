@@ -103,6 +103,7 @@ class Menu:
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
 
+
         button_surface = pygame.Surface((width, height), pygame.SRCALPHA)
         pygame.draw.rect(button_surface, background_color, button_surface.get_rect(), border_radius=radius)
 
@@ -150,11 +151,14 @@ class Menu:
             if self.options.show_options:
                 self.options.draw()
                 if self.options.show_options == False:
+                self.options.draw()
+                if self.options.show_options == False:
                     self.options.show_options = False
                 pygame.display.update()
                 continue
 
             title_text = "YINSH"
+            title_color = (255, 255, 255)
             title_color = (255, 255, 255)
             title_size = 100
             title_font = pygame.font.Font(None, title_size)
