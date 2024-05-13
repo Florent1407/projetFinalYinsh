@@ -2,7 +2,6 @@ import pygame
 import pygame.mixer
 import sys
 import os
-
 from options import Options
     
 class Menu:
@@ -16,7 +15,7 @@ class Menu:
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
         self.font = pygame.font.Font(None, 36)
         self.submenu = SubMenu(window, width, height)
-        self.network_menu = NetworkMenu(window, width, height)  # initialiser self.network_menu
+        self.network_menu = NetworkMenu(window, width, height)
         self.show_submenu = False
         self.show_network_menu = False
         self.options = Options(window, width, height)
