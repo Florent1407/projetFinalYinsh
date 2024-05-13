@@ -39,7 +39,7 @@ class Board:
         return hexagon_vertices
 
     def display_board(self, screen, board_x, board_y):
-        color_board = (178, 161, 155)
+        color_board = (245, 245, 220)
         color_line = (0, 0, 0)  
         for point in self.points:
             x, y = board_x + point[0]*41, board_y + point[1]*23.5
@@ -49,7 +49,7 @@ class Board:
                                y + 45 * math.sin(2 * math.pi / 6 * i + math.pi/6))
                 end_point = (x + 45 * math.cos(2 * math.pi / 6 * (i + 3) + math.pi/6),
                              y + 45 * math.sin(2 * math.pi / 6 * (i + 3) + math.pi/6))
-                pygame.draw.line(screen, color_line, start_point, end_point, 2)
+                pygame.draw.line(screen, color_line, start_point, end_point, 3)
 
     def reset_board(self):
         self.points.clear()

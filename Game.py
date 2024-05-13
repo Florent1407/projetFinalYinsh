@@ -60,8 +60,8 @@ class Game:
         self.board.place_points()
         self.pawn_per_player = 5
         self.place_markers = {1: False, 2: False}
-        self.color_player_1 = (189, 61, 61)
-        self.color_player_2 = (99, 99, 99)
+        self.color_player_1 = (0, 120, 255)
+        self.color_player_2 = (255, 0, 0)
         self.current_player = 1
         self.pawn_on_board = {1: 0, 2: 0}
         self.board_width = self.board.width * 50
@@ -177,8 +177,8 @@ class Game:
         
                     
     def draw_pawn(self):
-        pawn_ray = 15
-        pawn_thickness = 2
+        pawn_ray = 20
+        pawn_thickness = 4
 
         for row in range(len(self.boardList)):
             for cell in range(len(self.boardList[row])):
@@ -212,10 +212,10 @@ class Game:
                 self.current_player = 1
 
     def draw_marker(self):
-        radius_marker = 9
+        radius_marker = 10
         marker_thickness = 0
-        pawn_ray = 15
-        pawn_thickness =2
+        pawn_ray = 20
+        pawn_thickness = 4
       
         for row in range(len(self.boardList)):
             for cell in range(len(self.boardList[row])):
