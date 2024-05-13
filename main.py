@@ -1,7 +1,7 @@
 import pygame
 import sys
 import menu
-import plateau
+import Board
 
 def main():
     pygame.init()
@@ -15,7 +15,7 @@ def main():
     startgame = menuinstance.run()
 
     if startgame:
-        gameInstance = plateau.Game()
+        gameInstance = Board.Game()
         gameInstance.start()
 
     pygame.quit()
