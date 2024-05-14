@@ -2,6 +2,7 @@ import pygame
 import os
 import Board
 from Game import Game
+from blitzGame import blitzGame
 
 class SubMenu:
     def __init__(self, window, width, height):
@@ -38,6 +39,10 @@ class SubMenu:
 
                 elif action == "local_ordi":
                     game_instance = GameVsComputer()
+                    game_instance.run()
+
+                elif action == "local_blitz":
+                    game_instance = blitzGame()
                     game_instance.run()
 
         self.draw_text(text, (0, 0, 0), x + width / 2, y + height / 2)
