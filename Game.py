@@ -133,7 +133,6 @@ class Game:
                     self.indexPosition[(x, y)] = (row_index, col_index)
                     self.position_coordinates[(row_index, col_index)]=(x, y)
                     index_position += 1
-        # print(self.positionIndex, self.positioncoords)
 
     def check_events(self):
         for event in pygame.event.get():
@@ -172,9 +171,7 @@ class Game:
                 self.clic_value = value
                 self.place_pawn() 
                 self.place_markers_on_board()
-                self.displacement()
-                # print("Clic dans la cellule", value)
-        
+                self.displacement()        
                     
     def draw_pawn(self):
         pawn_ray = 20
@@ -258,36 +255,51 @@ class Game:
     def check_vertical_high(self, row, cols, row_marker, cols_marker):
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         for i in range(row_marker, row - 1, -1):
             if self.boardList[i][cols] == 1 or self.boardList[i][cols] == 2:
                 return
         for i in range(row_marker, row - 1, -1):
             if self.boardList[i][cols] == 5 or self.boardList[i][cols] == 6:
                 coords.append((i, cols))
+                if tracking==False:
+                    tracking = True
+            elif self.boardList[i][cols]==0 and tracking==True and i!=row:
+                sequence_broken=True
+                break
+        if sequence_broken==False and tracking==True:
                 x, y = coords[-1]
-
                 if x - 2 == row and y == cols:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
                         self.current_player = self.current_player % 2 + 1
                         self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0 and self.boardList[row][cols] == 0:
-            self.boardList[row][cols] = self.current_player
-            self.boardList[row_marker][cols_marker] = marker
-            self.current_player = self.current_player % 2 + 1
-            self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
+        else:
+            if len(coords) == 0 and self.boardList[row][cols] == 0:
+                self.boardList[row][cols] = self.current_player
+                self.boardList[row_marker][cols_marker] = marker
+                self.current_player = self.current_player % 2 + 1
+                self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
 
     def check_vertical_bottom(self,row,cols,row_marker,cols_marker):
         marker=self.current_player+4
         coords=[]
+        tracking = False
+        sequence_broken = False
         for i in range(row_marker,row+1,+1):
             if self.boardList[i][cols] == 1 or self.boardList[i][cols] == 2:
                 return
         for i in range(row_marker,row+1,+1):
             if self.boardList[i][cols]==5 or self.boardList[i][cols]==6 :
                 coords.append((i,cols))
+                if tracking==False:
+                    tracking = True
+            elif self.boardList[i][cols]==0 and tracking==True and i!=row:
+                sequence_broken=True
+                break
+        if sequence_broken==False and tracking==True:
                 x,y=coords[-1]
                 if x+2==row and y==cols:
                     if self.boardList[row][cols]==0:
@@ -295,20 +307,21 @@ class Game:
                         self.boardList[row_marker][cols_marker] = marker
                         self.current_player = self.current_player%2+1
                         self.return_marker_vertical_bottom(row,cols,row_marker,cols_marker)
-                    break
-        if len(coords)==0:
-            if self.boardList[row][cols]==0:
-                self.boardList[row][cols] = self.current_player
-                self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player%2+1
-                #print('joueur actuel :',self.current_player)
-                self.return_marker_vertical_bottom(row,cols,row_marker,cols_marker)
+        else:            
+            if len(coords)==0:
+                if self.boardList[row][cols]==0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.current_player = self.current_player%2+1
+                    self.return_marker_vertical_bottom(row,cols,row_marker,cols_marker)
 
     def check_diagonal_right_high(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         num_steps = min(row_marker - row, cols - cols_marker) + 1
         for step in range(num_steps):
             i = row_marker - step
@@ -320,30 +333,34 @@ class Game:
             j = cols_marker + step
             if self.boardList[i][j] == 5 or self.boardList[i][j] == 6:
                 coords.append((i, j))
+                if tracking == False:
+                    tracking = True
+            elif self.boardList[i][j] == 0 and tracking == True and i != row and j != cols:
+                sequence_broken = True
+                break
+        if sequence_broken == False and tracking == True:
                 x, y = coords[-1]
                 if x - 1 == row and y + 1 == cols:
-                    #print('Diagonal droite haute condition 1')
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
                         self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0:
-            #print('Diagonal droite haute condition 2')
-            if self.boardList[row][cols] == 0:
-                self.boardList[row][cols] = self.current_player
-                self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
-                #print('Joueur actuel :', self.current_player)
-                self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
-
+        else:           
+            if len(coords) == 0:
+                if self.boardList[row][cols] == 0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.current_player = self.current_player % 2 + 1
+                    self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
 
     def check_diagonal_left_high(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         num_steps = min(row_marker - row, cols_marker - cols) + 1
         for step in range(num_steps):
             i = row_marker - step
@@ -355,30 +372,34 @@ class Game:
             j = cols_marker - step
             if self.boardList[i][j] == 5 or self.boardList[i][j] == 6:
                 coords.append((i, j))
+                if tracking == False:
+                    tracking = True
+            elif self.boardList[i][j] == 0 and tracking == True and i != row and j != cols:
+                sequence_broken = True
+                break
+        if sequence_broken == False and tracking == True:
                 x, y = coords[-1]
                 if x - 1 == row and y - 1 == cols:
-                    #print('Diagonal gauche haute condition 1')
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
                         self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0:
-            #print('Diagonal gauche haute condition 2')
-            if self.boardList[row][cols] == 0:
-                self.boardList[row][cols] = self.current_player
-                self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
-                self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
-                #print('Joueur actuel :', self.current_player)
-
+        else:           
+            if len(coords) == 0:
+                if self.boardList[row][cols] == 0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.current_player = self.current_player % 2 + 1
+                    self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
 
     def check_diagonal_left_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         num_steps = min(row - row_marker, cols_marker - cols) + 1
         for step in range(num_steps):
             i = row_marker + step
@@ -390,30 +411,34 @@ class Game:
             j = cols_marker - step
             if self.boardList[i][j] == 5 or self.boardList[i][j] == 6:
                 coords.append((i, j))
+                if tracking == False:
+                    tracking = True
+            elif self.boardList[i][j] == 0 and tracking == True and i != row and j != cols:
+                sequence_broken = True
+                break
+        if sequence_broken == False and tracking == True:
                 x, y = coords[-1]
                 if x + 1 == row and y - 1 == cols:
-                    #print('Diagonal gauche basse condition 1')
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
                         self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0:
-            #print('Diagonal gauche basse condition 2')
-            if self.boardList[row][cols] == 0:
-                self.boardList[row][cols] = self.current_player
-                self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
-                self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
-                #print('Joueur actuel :', self.current_player)
-
+        else:            
+            if len(coords) == 0:
+                if self.boardList[row][cols] == 0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.current_player = self.current_player % 2 + 1
+                    self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
 
     def check_diagonal_right_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         num_steps = min(row - row_marker, cols - cols_marker) + 1
         for step in range(num_steps):
             i = row_marker + step
@@ -425,6 +450,12 @@ class Game:
             j = cols_marker + step
             if self.boardList[i][j] == 5 or self.boardList[i][j] == 6:
                 coords.append((i, j))
+                if tracking == False:
+                    tracking = True
+            elif self.boardList[i][j] == 0 and tracking == True and i != row and j != cols:
+                sequence_broken = True
+                break
+        if sequence_broken == False and tracking == True:
                 x, y = coords[-1]
                 if x + 1 == row and y + 1 == cols:
                     if self.boardList[row][cols] == 0:
@@ -432,13 +463,14 @@ class Game:
                         self.boardList[row_marker][cols_marker] = marker
                         self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0:
-            if self.boardList[row][cols] == 0:
-                self.boardList[row][cols] = self.current_player
-                self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
-                self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
+        else:
+            if len(coords) == 0:
+                if self.boardList[row][cols] == 0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.current_player = self.current_player % 2 + 1
+                    self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
+
     def displacement (self):
         pawn_marker=self.current_player+2
         row,cols=self.clic_value
@@ -450,22 +482,16 @@ class Game:
                         if cols-cols_marker == 0:
                             if row_marker>row:
                                 self.check_vertical_high(row,cols,row_marker,cols_marker)
-                                #print("vertical hautte")
                             elif row_marker<row:
                                 self.check_vertical_bottom(row,cols,row_marker,cols_marker)
-                                #print("vertical basse")
                         elif row_marker<row and cols_marker<cols:
                             self.check_diagonal_right_low(row,cols,row_marker,cols_marker)
-                            #print("diagonal droite basse")                                       
                         elif row_marker>row and cols_marker<cols:
                             self.check_diagonal_right_high(row,cols,row_marker,cols_marker)
-                            #print("diagonal droite hautte")
                         elif row_marker>row and cols_marker>cols:
                             self.check_diagonal_left_high(row,cols,row_marker,cols_marker) 
-                            #print("diagonal gauche hautte")                               
                         elif row_marker<row and cols_marker>cols:
                             self.check_diagonal_left_low(row,cols,row_marker,cols_marker)
-                            #print("diagonal gauche basse")
 
     def draw_solo_marqueur(self):
         radius_marker = 9
@@ -493,7 +519,7 @@ class Game:
 
     def return_marker_vertical_high(self, row, cols, row_marker, cols_marker):
         for i in range(row_marker-1, row - 1, -1):
-            if 0<=i<=17:
+            if 0<=i<=18:
                 if self.boardList[i][cols_marker] == 5:
                     self.boardList[i][cols_marker] = 6
                 elif self.boardList[i][cols_marker] == 6:
@@ -501,51 +527,67 @@ class Game:
 
     def return_marker_vertical_bottom(self, row, cols, row_marker, cols_marker):
         for i in range(row_marker+1,row+1,+1):
-            if 0<=i<=17:
+            if 0<=i<=18:
                 if self.boardList[i][cols_marker] == 5:
                     self.boardList[i][cols_marker] = 6
                 elif self.boardList[i][cols_marker] == 6:
                     self.boardList[i][cols_marker] = 5
 
     def return_marker_diagonal_right_low(self, row, cols, row_marker, cols_marker):
-        num_steps = min(row - row_marker - 1, cols - cols_marker - 1) + 1
-        for step in range(num_steps+1):
-            i = row_marker + 1 + step
-            j = cols_marker + 1 + step
-            if 0<=i<=17 and 0<=j<=10:
+        row=row-1
+        cols=cols-1
+        row_marker=row_marker+1
+        cols_marker=cols_marker+1
+        num_steps = min(row - row_marker, cols - cols_marker) + 2
+        for step in range(num_steps):
+            i = row_marker  + step
+            j = cols_marker  + step
+            if 0<=i<=18 and 0<=j<=10:
                 if self.boardList[i][j]==5:
                     self.boardList[i][j] = 6
                 elif self.boardList[i][j]==6:
                     self.boardList[i][j] = 5
 
     def return_marker_diagonal_right_high(self, row, cols, row_marker, cols_marker):
-        num_steps = min(row_marker - row, cols - cols_marker) + 1
+        row=row+1
+        cols=cols-1
+        row_marker=row_marker-1
+        cols_marker=cols_marker+1
+        num_steps = min(row_marker - row, cols - cols_marker)+2
         for step in range(num_steps):
-            i = row_marker - step-1
-            j = cols_marker + step+1
-            if 0<=i<=17 and 0<=j<=10:
+            i = row_marker - step
+            j = cols_marker + step
+            if 0<=i<=18 and 0<=j<=10:
                 if self.boardList[i][j] == 5:
                     self.boardList[i][j] = 6
                 elif self.boardList[i][j] == 6:
                     self.boardList[i][j] = 5
 
     def return_marker_diagonal_left_high(self, row, cols, row_marker, cols_marker):
-        num_steps = min(row_marker - row, cols_marker - cols) + 1
+        row=row+1
+        cols=cols+1
+        row_marker=row_marker-1
+        cols_marker=cols_marker-1
+        num_steps = min(row_marker - row, cols_marker - cols) + 2
         for step in range(num_steps):
-            i = row_marker - step-1
-            j = cols_marker - step-1
-            if 0<=i<=17 and 0<=j<=10:
+            i = row_marker - step
+            j = cols_marker - step
+            if 0<=i<=18 and 0<=j<=10:
                 if self.boardList[i][j] == 5:
                     self.boardList[i][j] = 6
                 elif self.boardList[i][j] == 6:
                     self.boardList[i][j] = 5
 
     def return_marker_diagonal_left_low(self, row, cols, row_marker, cols_marker):
-        num_steps = min(row - row_marker, cols_marker - cols) + 1
+        row=row-1
+        cols=cols+1
+        row_marker=row_marker+1
+        cols_marker=cols_marker-1
+        num_steps = min(row - row_marker, cols_marker - cols) + 2
         for step in range(num_steps):
-            i = row_marker + step+1
-            j = cols_marker - step-1
-            if 0<=i<=10 and 0<=j<=17:
+            i = row_marker + step
+            j = cols_marker - step
+            if 0<=i<=18 and 0<=j<=10:
                 if self.boardList[i][j] == 5:
                     self.boardList[i][j] = 6
                 elif self.boardList[i][j] == 6:

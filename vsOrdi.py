@@ -394,7 +394,7 @@ class GameVsComputer:
                 self.boardList[row][cols] = self.current_player
                 self.boardList[row_marker][cols_marker] = marker
                 self.current_player = self.current_player % 2 + 1
-                print('joueur actuel :', self.current_player)
+                #print('joueur actuel :', self.current_player)
                 #self.return_marker_vertical_bottom(row, cols, row_marker, cols_marker)
 
     def check_diagonal_right_high(self, row, cols, row_marker, cols_marker):
@@ -415,7 +415,7 @@ class GameVsComputer:
                 coords.append((i, j))
                 x, y = coords[-1]
                 if x - 1 == row and y + 1 == cols:
-                    print('Diagonal droite haute condition 1')
+                    #print('Diagonal droite haute condition 1')
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
@@ -423,12 +423,12 @@ class GameVsComputer:
                         #self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
                     break
         if len(coords) == 0:
-            print('Diagonal droite haute condition 2')
+            #print('Diagonal droite haute condition 2')
             if self.boardList[row][cols] == 0:
                 self.boardList[row][cols] = self.current_player
                 self.boardList[row_marker][cols_marker] = marker
                 self.current_player = self.current_player % 2 + 1
-                print('Joueur actuel :', self.current_player)
+                #print('Joueur actuel :', self.current_player)
                 #self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
 
     def check_diagonal_left_high(self, row, cols, row_marker, cols_marker):
@@ -449,7 +449,7 @@ class GameVsComputer:
                 coords.append((i, j))
                 x, y = coords[-1]
                 if x - 1 == row and y - 1 == cols:
-                    print('Diagonal gauche haute condition 1')
+                    #print('Diagonal gauche haute condition 1')
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
@@ -457,13 +457,13 @@ class GameVsComputer:
                         #self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
                     break
         if len(coords) == 0:
-            print('Diagonal gauche haute condition 2')
+            #print('Diagonal gauche haute condition 2')
             if self.boardList[row][cols] == 0:
                 self.boardList[row][cols] = self.current_player
                 self.boardList[row_marker][cols_marker] = marker
                 self.current_player = self.current_player % 2 + 1
                 #self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
-                print('Joueur actuel :', self.current_player)
+                #print('Joueur actuel :', self.current_player)
 
     def check_diagonal_left_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
@@ -483,7 +483,7 @@ class GameVsComputer:
                 coords.append((i, j))
                 x, y = coords[-1]
                 if x + 1 == row and y - 1 == cols:
-                    print('Diagonal gauche basse condition 1')
+                    #print('Diagonal gauche basse condition 1')
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
@@ -491,13 +491,13 @@ class GameVsComputer:
                         #self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
                     break
         if len(coords) == 0:
-            print('Diagonal gauche basse condition 2')
+            #print('Diagonal gauche basse condition 2')
             if self.boardList[row][cols] == 0:
                 self.boardList[row][cols] = self.current_player
                 self.boardList[row_marker][cols_marker] = marker
                 self.current_player = self.current_player % 2 + 1
                 #self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
-                print('Joueur actuel :', self.current_player)
+                #print('Joueur actuel :', self.current_player)
 
     def check_diagonal_right_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
@@ -541,22 +541,22 @@ class GameVsComputer:
                         if cols - cols_marker == 0:
                             if row_marker > row:
                                 self.check_vertical_high(row, cols, row_marker, cols_marker)
-                                print("vertical hautte")
+                                #print("vertical hautte")
                             elif row_marker < row:
                                 self.check_vertical_bottom(row, cols, row_marker, cols_marker)
-                                print("vertical basse")
+                                #print("vertical basse")
                         elif row_marker < row and cols_marker < cols:
                             self.check_diagonal_right_low(row, cols, row_marker, cols_marker)
-                            print("diagonal droite basse")
+                            #print("diagonal droite basse")
                         elif row_marker > row and cols_marker < cols:
                             self.check_diagonal_right_high(row, cols, row_marker, cols_marker)
-                            print("diagonal droite hautte")
+                            #print("diagonal droite hautte")
                         elif row_marker > row and cols_marker > cols:
                             self.check_diagonal_left_high(row, cols, row_marker, cols_marker)
-                            print("diagonal gauche hautte")
+                            #print("diagonal gauche hautte")
                         elif row_marker < row and cols_marker > cols:
                             self.check_diagonal_left_low(row, cols, row_marker, cols_marker)
-                            print("diagonal gauche basse")
+                            #print("diagonal gauche basse")
 
 
     def draw_remaining_pions(self):
