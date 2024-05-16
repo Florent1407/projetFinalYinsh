@@ -173,11 +173,11 @@ class Game:
             if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
                (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
                 self.clic_value = value
-                if not self.pawn_delet:  # Normal game flow
+                if not self.pawn_delet:  
                     self.place_pawn() 
                     self.place_markers_on_board()
                     self.displacement()
-                else:  # Pawn deletion flow
+                else:
                     self.delete_pawns(x, y)
                        
                     
@@ -639,7 +639,7 @@ class Game:
                     coords_alignment.append((row, col))
                     if alignment >= 3:
                         self.delte_aligments(coords_alignment)
-                        self.deleting_player = self.current_player  # Le joueur actuel réalise l'alignement
+                        self.deleting_player = self.current_player  
                         self.pawn_delet = True
                 elif self.boardList[row][col]==0 or self.boardList[row][col] == marker_other_player or self.boardList[row][col] == 1 or self.boardList[row][col]==2:
                     alignment = 0
@@ -668,7 +668,7 @@ class Game:
                 coords_alignment.append((i, j))
                 if alignment >= 3:
                     self.delte_aligments(coords_alignment)
-                    self.deleting_player = self.current_player  # Le joueur actuel réalise l'alignement
+                    self.deleting_player = self.current_player  
                     self.pawn_delet = True
                     break  
             elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
@@ -700,7 +700,7 @@ class Game:
                 coords_alignment.append((i, j))
                 if alignment >= 3:
                     self.delte_aligments(coords_alignment)
-                    self.deleting_player = self.current_player  # Le joueur actuel réalise l'alignement
+                    self.deleting_player = self.current_player  
                     self.pawn_delet = True
                     break 
             elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
