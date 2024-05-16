@@ -76,6 +76,10 @@ class blitzGame:
         option_instance = options.Options(self.screen, self.screen_width, self.screen_height)
         self.volume = option_instance.get_volume()
         self.position_cells()
+        self.pawn_delet = False
+        self.game_over = False
+        self.victory_player = 0
+
 
     def play_game_music(self):
         pygame.mixer.music.stop()
@@ -146,6 +150,7 @@ class blitzGame:
                         self.paused = not self.paused
                     elif not self.paused:  
                         self.find_clicked_cell(x, y)
+                    
 
                     if self.paused:
                         menu_items_rects = [pygame.Rect(400, 180 + i * 50, 400, 40) for i in range(5)]
@@ -163,15 +168,16 @@ class blitzGame:
                                     self.return_main_menu()
 
     def find_clicked_cell(self, x, y):
-        hitbox_taille = 10
+        hitbox_taille = 20
         for key, value in self.indexPosition.items():
             cell_x, cell_y = key
             if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
                (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
                 self.clic_value = value
-                self.place_pawn() 
-                self.place_markers_on_board()
-                self.displacement()        
+                if not self.pawn_delet:
+                    self.place_pawn() 
+                    self.place_markers_on_board()
+                    self.displacement()                       
                     
     def draw_pawn(self):
         pawn_ray = 20
@@ -274,14 +280,18 @@ class blitzGame:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
                         self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player % 2 + 1
+                        
         else:
             if len(coords) == 0 and self.boardList[row][cols] == 0:
                 self.boardList[row][cols] = self.current_player
                 self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
                 self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
+                self.alignment_verification()
+                self.current_player = self.current_player % 2 + 1
+                
 
     def check_vertical_bottom(self,row,cols,row_marker,cols_marker):
         marker=self.current_player+4
@@ -305,15 +315,19 @@ class blitzGame:
                     if self.boardList[row][cols]==0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player%2+1
                         self.return_marker_vertical_bottom(row,cols,row_marker,cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player%2+1
+                        
         else:            
             if len(coords)==0:
                 if self.boardList[row][cols]==0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player%2+1
                     self.return_marker_vertical_bottom(row,cols,row_marker,cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player%2+1
+                    
 
     def check_diagonal_right_high(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
@@ -344,16 +358,18 @@ class blitzGame:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
+                        self.alignment_verification()
                         self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
+                        self.current_player = self.current_player % 2 + 1
         else:           
             if len(coords) == 0:
                 if self.boardList[row][cols] == 0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player % 2 + 1
                     self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
-
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
+                    
     def check_diagonal_left_high(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
@@ -383,15 +399,18 @@ class blitzGame:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player % 2 + 1
+                        
         else:           
             if len(coords) == 0:
                 if self.boardList[row][cols] == 0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player % 2 + 1
                     self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
 
     def check_diagonal_left_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
@@ -422,15 +441,18 @@ class blitzGame:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player % 2 + 1
+                        
         else:            
             if len(coords) == 0:
                 if self.boardList[row][cols] == 0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player % 2 + 1
                     self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
 
     def check_diagonal_right_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
@@ -461,15 +483,18 @@ class blitzGame:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player % 2 + 1
+                        
         else:
             if len(coords) == 0:
                 if self.boardList[row][cols] == 0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player % 2 + 1
                     self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
 
     def displacement (self):
         pawn_marker=self.current_player+2
@@ -569,7 +594,7 @@ class blitzGame:
         row_marker=row_marker-1
         cols_marker=cols_marker-1
         num_steps = min(row_marker - row, cols_marker - cols) + 2
-        for step in range(num_steps):
+        for step in range(num_steps):   
             i = row_marker - step
             j = cols_marker - step
             if 0<=i<=18 and 0<=j<=10:
@@ -592,6 +617,99 @@ class blitzGame:
                     self.boardList[i][j] = 6
                 elif self.boardList[i][j] == 6:
                     self.boardList[i][j] = 5
+
+    def alignment_verification(self):
+        self.vertical_alignment()
+        self.alignment_diag_left_to_right()
+        self.alignment_diagonal_right_to_left()
+
+        if self.pawn_delet:
+            self.game_over = True
+        
+    def vertical_alignment(self):
+        marker_current_player = self.current_player + 4
+        if self.current_player % 2 == 0:
+            marker_other_player = 5
+        else:
+            marker_other_player = 6
+        for col in range(11):
+            alignment = 0
+            coords_alignment = []
+            for row in range(19):
+                if self.boardList[row][col] == marker_current_player:
+                    alignment += 1
+                    coords_alignment.append((row, col))
+                    if alignment == 2: # pions à aligner
+                        self.delte_aligments(coords_alignment)
+                        self.pawn_delet = True
+                        self.display_winner()
+                        break
+                elif self.boardList[row][col]==0 or self.boardList[row][col] == marker_other_player or self.boardList[row][col] == 1 or self.boardList[row][col]==2:
+                    alignment = 0
+                    coords_alignment = []
+
+    def alignment_diag_left_to_right(self):
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        max_rows = 19
+        max_columns = 11
+        for start_row in range(max_rows):
+            self.check_diagonal_left_to_right(start_row, 0, marker_current_player, marker_other_player, max_rows, max_columns)
+
+        for start_col in range(1, max_columns):  
+            self.check_diagonal_left_to_right(0, start_col, marker_current_player, marker_other_player, max_rows, max_columns)
+
+    def check_diagonal_left_to_right(self, start_row, start_col, marker_current_player, marker_other_player, max_rows, max_columns):
+        alignment = 0
+        coords_alignment = []
+
+        step_limit = min(max_rows - start_row, max_columns - start_col)
+        for step in range(step_limit):
+            i, j = start_row + step, start_col + step
+            if self.boardList[i][j] == marker_current_player:
+                alignment += 1
+                coords_alignment.append((i, j))
+                if alignment == 2: # pions à aligner
+                    self.delte_aligments(coords_alignment)
+                    self.pawn_delet = True
+                    self.display_winner()
+                    break  
+            elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
+                alignment = 0
+                coords_alignment = []
+
+        
+
+    def alignment_diagonal_right_to_left(self):
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        max_rows = 19
+        max_columns = 11
+        
+        for start_row in range(max_rows):
+            self.check_diagonal_right_to_left(start_row, max_columns - 1, marker_current_player, marker_other_player, max_rows, max_columns)
+        for start_col in range(max_columns - 1):
+            self.check_diagonal_right_to_left(0, start_col, marker_current_player, marker_other_player, max_rows, max_columns)
+
+    def check_diagonal_right_to_left(self, start_row, start_col, marker_current_player, marker_other_player, max_rows, max_columns):
+        alignment = 0
+        coords_alignment = []
+
+        step_limit = min(max_rows - start_row, start_col + 1) 
+        for step in range(step_limit):
+            i, j = start_row + step, start_col - step
+            if self.boardList[i][j] == marker_current_player:
+                alignment += 1
+                coords_alignment.append((i, j))
+                if alignment == 2: # pions à aligner
+                    self.delte_aligments(coords_alignment)
+                    self.pawn_delet = True
+                    self.display_winner()
+                    break 
+            elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
+                alignment = 0
+                coords_alignment = []
+    
     def draw_remaining_pions(self):
         pawn_radius = 15
         pawn_gap = 20
@@ -610,6 +728,58 @@ class blitzGame:
                 pygame.draw.circle(self.screen, self.color_player_1 if i == 1 else self.color_player_2, (x + column_width // 2, y), pawn_radius)
                 y += 2 * (pawn_radius + pawn_gap)
 
+    def delte_aligments(self,coords):
+        for x,y in coords:
+            self.boardList[x][y]=0
+                    
+    def draw_button(self, text, x, y, width, height, action=None):
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_click = pygame.mouse.get_pressed()
+
+        if x + width > mouse_pos[0] > x and y + height > mouse_pos[1] > y:
+            pygame.draw.rect(self.screen, (128, 128, 128), (x, y, width, height))
+            pygame.draw.rect(self.screen, (0, 0, 0), (x, y, width, height), 3)
+            if mouse_click[0] == 1 and action is not None:
+                action()
+        else:
+            pygame.draw.rect(self.screen, (245, 245, 220), (x, y, width, height))
+            pygame.draw.rect(self.screen, (0, 0, 0), (x, y, width, height), 3)
+
+        button_font = pygame.font.SysFont(None, 30)
+        button_text = button_font.render(text, True, (0, 0, 0))
+        text_rect = button_text.get_rect(center=(x + width // 2, y + height // 2))
+        self.screen.blit(button_text, text_rect)
+
+    def display_winner(self):
+        dark_overlay = pygame.Surface(self.screen.get_size())
+        dark_overlay.set_alpha(128)
+        dark_overlay.fill((0, 0, 0))
+        self.screen.blit(dark_overlay, (0, 0))
+
+        self.screen.blit(self.fond, (0, 0))
+
+        pygame.draw.rect(self.screen, (245, 245, 220), (300, 150, 600, 300))
+        pygame.draw.rect(self.screen, (0, 0, 0), (300, 150, 600, 300), 10)
+
+        if self.current_player == 1:
+            self.victory_player = 2
+        else:
+            self.victory_player = 1
+
+        victory_font = pygame.font.SysFont(None, 40)
+        victory_text = f"Joueur {self.victory_player} a gagné !"
+        label = victory_font.render(victory_text, True, (0, 0, 0))
+        label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 200))
+        self.screen.blit(label, label_rect)
+
+        button_width = 200
+        button_height = 50
+        button_x = self.screen.get_rect().centerx - button_width * 1.25
+        button_y = 300  # Au lieu de 400
+        self.draw_button("Menu principal", button_x, button_y, button_width, button_height, self.return_main_menu)
+        self.draw_button("Rejouer", button_x + button_width * 1.5, button_y, button_width, button_height, self.restart_game)
+
+        pygame.display.flip()
 
     def restart_game(self):
         self.boardList = [[None,None,None,None,0,None,0,None,None,None,None],
@@ -637,6 +807,9 @@ class blitzGame:
         self.current_player = 1
         self.paused = False
         self.place_markers = {1: False, 2: False}
+        self.pawn_delet = False
+        self.game_over = False
+        self.victory_player = None
 
     def save_game(self):
         pass
@@ -686,6 +859,8 @@ class blitzGame:
             self.screen.blit(self.fond, (0, 0))
             if self.paused:
                 self.show_menu_pause()
+            elif self.game_over:
+                self.display_winner()
             else:
                 self.show_player_turn()
                 self.draw_remaining_pions()
