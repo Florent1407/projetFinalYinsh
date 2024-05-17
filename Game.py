@@ -76,6 +76,8 @@ class Game:
         option_instance = options.Options(self.screen, self.screen_width, self.screen_height)
         self.volume = option_instance.get_volume()
         self.position_cells()
+        self.pawn_delet = False
+        self.number_pawn_delte={1: 0, 2: 0}
 
     def play_game_music(self):
         pygame.mixer.music.stop()
@@ -146,6 +148,8 @@ class Game:
                         self.paused = not self.paused
                     elif not self.paused:  
                         self.find_clicked_cell(x, y)
+                    elif self.pawn_delet:
+                        self.delete_pawns(x, y)
 
                     if self.paused:
                         menu_items_rects = [pygame.Rect(400, 180 + i * 50, 400, 40) for i in range(5)]
@@ -169,9 +173,13 @@ class Game:
             if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
                (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
                 self.clic_value = value
-                self.place_pawn() 
-                self.place_markers_on_board()
-                self.displacement()        
+                if not self.pawn_delet:  
+                    self.place_pawn() 
+                    self.place_markers_on_board()
+                    self.displacement()
+                else:
+                    self.delete_pawns(x, y)
+                       
                     
     def draw_pawn(self):
         pawn_ray = 20
@@ -274,14 +282,18 @@ class Game:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
                         self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player % 2 + 1
+                        
         else:
             if len(coords) == 0 and self.boardList[row][cols] == 0:
                 self.boardList[row][cols] = self.current_player
                 self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
                 self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
+                self.alignment_verification()
+                self.current_player = self.current_player % 2 + 1
+                
 
     def check_vertical_bottom(self,row,cols,row_marker,cols_marker):
         marker=self.current_player+4
@@ -305,15 +317,19 @@ class Game:
                     if self.boardList[row][cols]==0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player%2+1
                         self.return_marker_vertical_bottom(row,cols,row_marker,cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player%2+1
+                        
         else:            
             if len(coords)==0:
                 if self.boardList[row][cols]==0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player%2+1
                     self.return_marker_vertical_bottom(row,cols,row_marker,cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player%2+1
+                    
 
     def check_diagonal_right_high(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
@@ -344,16 +360,18 @@ class Game:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
+                        self.alignment_verification()
                         self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
+                        self.current_player = self.current_player % 2 + 1
         else:           
             if len(coords) == 0:
                 if self.boardList[row][cols] == 0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player % 2 + 1
                     self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
-
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
+                    
     def check_diagonal_left_high(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
@@ -383,15 +401,18 @@ class Game:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player % 2 + 1
+                        
         else:           
             if len(coords) == 0:
                 if self.boardList[row][cols] == 0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player % 2 + 1
                     self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
 
     def check_diagonal_left_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
@@ -422,15 +443,18 @@ class Game:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player % 2 + 1
+                        
         else:            
             if len(coords) == 0:
                 if self.boardList[row][cols] == 0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player % 2 + 1
                     self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
 
     def check_diagonal_right_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
@@ -461,15 +485,18 @@ class Game:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
                         self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player % 2 + 1
+                        
         else:
             if len(coords) == 0:
                 if self.boardList[row][cols] == 0:
                     self.boardList[row][cols] = self.current_player
                     self.boardList[row_marker][cols_marker] = marker
-                    self.current_player = self.current_player % 2 + 1
                     self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
 
     def displacement (self):
         pawn_marker=self.current_player+2
@@ -592,6 +619,114 @@ class Game:
                     self.boardList[i][j] = 6
                 elif self.boardList[i][j] == 6:
                     self.boardList[i][j] = 5
+    def alignment_verification(self):
+        self.vertical_alignment()
+        self.alignment_diag_left_to_right()
+        self.alignment_diagonal_right_to_left()
+        
+    def vertical_alignment(self):
+        marker_current_player = self.current_player + 4
+        if self.current_player % 2 == 0:
+            marker_other_player = 5
+        else:
+            marker_other_player = 6
+        for col in range(11):
+            alignment = 0
+            coords_alignment = []
+            for row in range(19):
+                if self.boardList[row][col] == marker_current_player:
+                    alignment += 1
+                    coords_alignment.append((row, col))
+                    if alignment >= 3:
+                        self.delte_aligments(coords_alignment)
+                        self.deleting_player = self.current_player  
+                        self.pawn_delet = True
+                elif self.boardList[row][col]==0 or self.boardList[row][col] == marker_other_player or self.boardList[row][col] == 1 or self.boardList[row][col]==2:
+                    alignment = 0
+                    coords_alignment = []
+
+    def alignment_diag_left_to_right(self):
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        max_rows = 19
+        max_columns = 11
+        for start_row in range(max_rows):
+            self.check_diagonal_left_to_right(start_row, 0, marker_current_player, marker_other_player, max_rows, max_columns)
+
+        for start_col in range(1, max_columns):  
+            self.check_diagonal_left_to_right(0, start_col, marker_current_player, marker_other_player, max_rows, max_columns)
+
+    def check_diagonal_left_to_right(self, start_row, start_col, marker_current_player, marker_other_player, max_rows, max_columns):
+        alignment = 0
+        coords_alignment = []
+
+        step_limit = min(max_rows - start_row, max_columns - start_col)
+        for step in range(step_limit):
+            i, j = start_row + step, start_col + step
+            if self.boardList[i][j] == marker_current_player:
+                alignment += 1
+                coords_alignment.append((i, j))
+                if alignment >= 3:
+                    self.delte_aligments(coords_alignment)
+                    self.deleting_player = self.current_player  
+                    self.pawn_delet = True
+                    break  
+            elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
+                alignment = 0
+                coords_alignment = []
+
+    
+
+    def alignment_diagonal_right_to_left(self):
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        max_rows = 19
+        max_columns = 11
+        
+        for start_row in range(max_rows):
+            self.check_diagonal_right_to_left(start_row, max_columns - 1, marker_current_player, marker_other_player, max_rows, max_columns)
+        for start_col in range(max_columns - 1):
+            self.check_diagonal_right_to_left(0, start_col, marker_current_player, marker_other_player, max_rows, max_columns)
+
+    def check_diagonal_right_to_left(self, start_row, start_col, marker_current_player, marker_other_player, max_rows, max_columns):
+        alignment = 0
+        coords_alignment = []
+
+        step_limit = min(max_rows - start_row, start_col + 1) 
+        for step in range(step_limit):
+            i, j = start_row + step, start_col - step
+            if self.boardList[i][j] == marker_current_player:
+                alignment += 1
+                coords_alignment.append((i, j))
+                if alignment >= 3:
+                    self.delte_aligments(coords_alignment)
+                    self.deleting_player = self.current_player  
+                    self.pawn_delet = True
+                    break 
+            elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
+                alignment = 0
+                coords_alignment = []
+
+    def delte_aligments(self,coords):
+        for x,y in coords:
+            self.boardList[x][y]=0
+
+    def delete_pawns(self, x, y):
+        if not self.pawn_delet:
+            return
+
+        hitbox_taille = 10
+        for key, value in self.indexPosition.items():
+            cell_x, cell_y = key
+            if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
+            (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
+                row, col = value
+                if self.boardList[row][col] == self.deleting_player:
+                    self.boardList[row][col] = 0
+                    self.pawn_delet = False
+                    print(f"Pawn at ({row}, {col}) deleted. Turn remains with Player {self.current_player}.")
+                    break
+
     def draw_remaining_pions(self):
         pawn_radius = 15
         pawn_gap = 20
