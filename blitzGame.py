@@ -639,9 +639,10 @@ class blitzGame:
                 if self.boardList[row][col] == marker_current_player:
                     alignment += 1
                     coords_alignment.append((row, col))
-                    if alignment == 2: # pions à aligner
+                    if alignment == 5:
                         self.delte_aligments(coords_alignment)
                         self.pawn_delet = True
+                        pygame.time.wait(1000)
                         self.display_winner()
                         break
                 elif self.boardList[row][col]==0 or self.boardList[row][col] == marker_other_player or self.boardList[row][col] == 1 or self.boardList[row][col]==2:
@@ -669,9 +670,10 @@ class blitzGame:
             if self.boardList[i][j] == marker_current_player:
                 alignment += 1
                 coords_alignment.append((i, j))
-                if alignment == 2: # pions à aligner
+                if alignment == 5:
                     self.delte_aligments(coords_alignment)
                     self.pawn_delet = True
+                    pygame.time.wait(1000)
                     self.display_winner()
                     break  
             elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
@@ -701,9 +703,10 @@ class blitzGame:
             if self.boardList[i][j] == marker_current_player:
                 alignment += 1
                 coords_alignment.append((i, j))
-                if alignment == 2: # pions à aligner
+                if alignment == 5:
                     self.delte_aligments(coords_alignment)
                     self.pawn_delet = True
+                    pygame.time.wait(1000)
                     self.display_winner()
                     break 
             elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
@@ -766,16 +769,16 @@ class blitzGame:
         else:
             self.victory_player = 1
 
-        victory_font = pygame.font.SysFont(None, 40)
+        victory_font = pygame.font.SysFont(None, 70)
         victory_text = f"Joueur {self.victory_player} a gagné !"
         label = victory_font.render(victory_text, True, (0, 0, 0))
-        label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 200))
+        label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 300))
         self.screen.blit(label, label_rect)
 
         button_width = 200
         button_height = 50
         button_x = self.screen.get_rect().centerx - button_width * 1.25
-        button_y = 300  # Au lieu de 400
+        button_y = 600
         self.draw_button("Menu principal", button_x, button_y, button_width, button_height, self.return_main_menu)
         self.draw_button("Rejouer", button_x + button_width * 1.5, button_y, button_width, button_height, self.restart_game)
 
