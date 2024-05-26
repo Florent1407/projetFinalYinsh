@@ -717,7 +717,7 @@ class Game:
         if not self.pawn_delet:
             return
 
-        hitbox_taille = 10
+        hitbox_taille = 20
         for key, value in self.indexPosition.items():
             cell_x, cell_y = key
             if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
