@@ -2,6 +2,7 @@ import pygame
 import os
 import Board
 from Game import Game
+from blitzGame import blitzGame
 
 class SubMenu:
     def __init__(self, window, width, height):
@@ -40,6 +41,10 @@ class SubMenu:
                     game_instance = GameVsComputer()
                     game_instance.run()
 
+                elif action == "local_blitz":
+                    game_instance = blitzGame()
+                    game_instance.run()
+
         self.draw_text(text, (0, 0, 0), x + width / 2, y + height / 2)
 
     def draw_return_button(self, x, y, width, height, background_color, border_color, action=None, radius=0):
@@ -63,10 +68,11 @@ class SubMenu:
     def draw(self):
         self.window.blit(self.background_image, (0, 0))
         self.draw_text("Choisissez votre mode de jeu", (255, 255, 255), self.width // 2, 100)
-        self.draw_button("1 vs 1 local", 100, 550, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="local", radius=10)
-        self.draw_button("1 vs 1 local Blitz", 100, 620, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="local_blitz", radius=10)
-        self.draw_button("Contre l'ordinateur", 700, 550, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="local_ordi", radius=10)
-        self.draw_button("Contre l'ordinateur Blitz", 700, 620, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="ordinateur_blitz", radius=10)
+        self.draw_button("1 vs 1 local", 100, 480, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="local", radius=10)
+        self.draw_button("1 vs 1 local Blitz", 100, 550, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="local_blitz", radius=10)
+        self.draw_button("Contre l'ordinateur", 700, 480, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="local_ordi", radius=10)
+        self.draw_button("Contre l'ordinateur Blitz", 700, 550, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="ordinateur_blitz", radius=10)
         if self.draw_return_button(50, 50, 150, 50, (255, 255, 255, 128), (0, 0, 0), action="retour", radius=10):
             return True
         return False
+

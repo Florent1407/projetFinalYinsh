@@ -4,7 +4,7 @@ import os
 import options
 import menu
 
-class Game:
+class blitzGame:
     def __init__(self):
         from Board import Board
         pygame.init()
@@ -77,9 +77,9 @@ class Game:
         self.volume = option_instance.get_volume()
         self.position_cells()
         self.pawn_delet = False
-        self.number_pawn_delte={1: 0, 2: 0}
         self.game_over = False
         self.victory_player = 0
+
 
     def play_game_music(self):
         pygame.mixer.music.stop()
@@ -150,8 +150,7 @@ class Game:
                         self.paused = not self.paused
                     elif not self.paused:  
                         self.find_clicked_cell(x, y)
-                    elif self.pawn_delet:
-                        self.delete_pawns(x, y)
+                    
 
                     if self.paused:
                         menu_items_rects = [pygame.Rect(400, 180 + i * 50, 400, 40) for i in range(5)]
@@ -178,10 +177,7 @@ class Game:
                 if not self.pawn_delet:
                     self.place_pawn() 
                     self.place_markers_on_board()
-                    self.displacement()
-                else:
-                    self.delete_pawns(x, y)
-                       
+                    self.displacement()                       
                     
     def draw_pawn(self):
         pawn_ray = 20
@@ -598,7 +594,7 @@ class Game:
         row_marker=row_marker-1
         cols_marker=cols_marker-1
         num_steps = min(row_marker - row, cols_marker - cols) + 2
-        for step in range(num_steps):
+        for step in range(num_steps):   
             i = row_marker - step
             j = cols_marker - step
             if 0<=i<=18 and 0<=j<=10:
@@ -621,10 +617,14 @@ class Game:
                     self.boardList[i][j] = 6
                 elif self.boardList[i][j] == 6:
                     self.boardList[i][j] = 5
+
     def alignment_verification(self):
         self.vertical_alignment()
         self.alignment_diag_left_to_right()
         self.alignment_diagonal_right_to_left()
+
+        if self.pawn_delet:
+            self.game_over = True
         
     def vertical_alignment(self):
         marker_current_player = self.current_player + 4
@@ -641,8 +641,10 @@ class Game:
                     coords_alignment.append((row, col))
                     if alignment == 5:
                         self.delte_aligments(coords_alignment)
-                        self.deleting_player = self.current_player
                         self.pawn_delet = True
+                        pygame.time.wait(1000)
+                        self.display_winner()
+                        break
                 elif self.boardList[row][col]==0 or self.boardList[row][col] == marker_other_player or self.boardList[row][col] == 1 or self.boardList[row][col]==2:
                     alignment = 0
                     coords_alignment = []
@@ -670,14 +672,15 @@ class Game:
                 coords_alignment.append((i, j))
                 if alignment == 5:
                     self.delte_aligments(coords_alignment)
-                    self.deleting_player = self.current_player
                     self.pawn_delet = True
+                    pygame.time.wait(1000)
+                    self.display_winner()
                     break  
             elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
                 alignment = 0
                 coords_alignment = []
 
-    
+        
 
     def alignment_diagonal_right_to_left(self):
         marker_current_player = self.current_player + 4
@@ -702,33 +705,14 @@ class Game:
                 coords_alignment.append((i, j))
                 if alignment == 5:
                     self.delte_aligments(coords_alignment)
-                    self.deleting_player = self.current_player
                     self.pawn_delet = True
+                    pygame.time.wait(1000)
+                    self.display_winner()
                     break 
             elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
                 alignment = 0
                 coords_alignment = []
-
-    def delte_aligments(self,coords):
-        for x,y in coords:
-            self.boardList[x][y]=0
-
-    def delete_pawns(self, x, y):
-        if not self.pawn_delet:
-            return
-
-        hitbox_taille = 20
-        for key, value in self.indexPosition.items():
-            cell_x, cell_y = key
-            if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
-            (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
-                row, col = value
-                if self.boardList[row][col] == self.deleting_player:
-                    self.boardList[row][col] = 0
-                    self.pawn_delet = False
-                    self.number_pawn_delte[self.deleting_player] += 1
-                    break
-
+    
     def draw_remaining_pions(self):
         pawn_radius = 15
         pawn_gap = 20
@@ -747,6 +731,10 @@ class Game:
                 pygame.draw.circle(self.screen, self.color_player_1 if i == 1 else self.color_player_2, (x + column_width // 2, y), pawn_radius)
                 y += 2 * (pawn_radius + pawn_gap)
 
+    def delte_aligments(self,coords):
+        for x,y in coords:
+            self.boardList[x][y]=0
+                    
     def draw_button(self, text, x, y, width, height, action=None):
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()
@@ -773,10 +761,6 @@ class Game:
 
         self.screen.blit(self.fond, (0, 0))
 
-        ring_radius = 30
-        ring_thickness = 5
-        ring_spacing = 50
-
         pygame.draw.rect(self.screen, (245, 245, 220), (300, 150, 600, 300))
         pygame.draw.rect(self.screen, (0, 0, 0), (300, 150, 600, 300), 10)
 
@@ -788,19 +772,8 @@ class Game:
         victory_font = pygame.font.SysFont(None, 70)
         victory_text = f"Joueur {self.victory_player} a gagné !"
         label = victory_font.render(victory_text, True, (0, 0, 0))
-        label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 250))
+        label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 300))
         self.screen.blit(label, label_rect)
-
-        x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 150
-        y = self.screen_height - (2 * ring_radius + 20)
-        for i in range(self.number_pawn_delte[1]):
-            pygame.draw.circle(self.screen, self.color_player_1, (x + i * (ring_radius + ring_spacing), y - 250), ring_radius, ring_thickness)
-
-        x_right = (self.screen_width + (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 355
-        y_right = self.screen_height - (2 * ring_radius + 20)
-        for i in range(self.number_pawn_delte[2]-1, -1, -1):
-            pygame.draw.circle(self.screen, self.color_player_2, (x_right - i * (ring_radius + ring_spacing), y_right - 250), ring_radius, ring_thickness)
-
 
         button_width = 200
         button_height = 50
@@ -840,7 +813,6 @@ class Game:
         self.pawn_delet = False
         self.game_over = False
         self.victory_player = None
-        self.number_pawn_delte = {1: 0, 2: 0}
 
     def save_game(self):
         pass
@@ -877,38 +849,7 @@ class Game:
                 elif cell == 0:
                     pygame.draw.circle(self.screen, zero_color, (x, y), radius_circle, circle_thickness)
 
-                index_position += 1    
-
-    def draw_rings(self):
-        ring_radius = 30
-        ring_thickness = 5
-        ring_spacing = 50
-
-        x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2
-        y = self.screen_height - (2 * ring_radius + 20)
-
-        for i in range(3):
-            if self.number_pawn_delte[1]  >= i + 1:
-                color = self.color_player_1
-            else:
-                color = (128, 128, 128)
-
-            pygame.draw.circle(self.screen, color, (x + i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
-
-        x = (self.screen_width + (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 510
-        y = self.screen_height - (2 * ring_radius + 20)
-
-        for i in range(2, -1, -1):
-            if self.number_pawn_delte[2]  >= i + 1:
-                color = self.color_player_2
-            else:
-                color = (128, 128, 128)
-
-            pygame.draw.circle(self.screen, color, (x - i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
-
-        if self.number_pawn_delte[1] == 3 or self.number_pawn_delte[2] == 3:
-            self.game_over = True
-
+                index_position += 1        
     def start(self):
         self.play_game_music()
         pause_font = pygame.font.SysFont(None, 30)
@@ -928,7 +869,6 @@ class Game:
                 self.draw_remaining_pions()
                 self.board.display_board(self.screen, self.board_x, self.board_y)
                 self.draw_pawn()
-                self.draw_rings()  
                 self.draw_marker()
                 self.draw_solo_marqueur()
 
