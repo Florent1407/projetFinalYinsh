@@ -1,74 +1,21 @@
 import pygame
 import sys
 import os
-import math
 import random
 import menu
 import options
 
-class Board:
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.points = set()
-        self.place_points()
-
-    def place_points(self):
-        BOARD_TEMPLATE = [
-            [3, 5],
-            [2, 4, 6],
-            [1, 3, 5, 7],
-            [2, 4, 6],
-            [1, 3, 5, 7],
-            [0, 2, 4, 6, 8],
-            [1, 3, 5, 7],
-            [0, 2, 4, 6, 8],
-            [1, 3, 5, 7],
-            [0, 2, 4, 6, 8],
-            [1, 3, 5, 7],
-            [2, 4, 6],
-            [1, 3, 5, 7],
-            [2, 4, 6],
-            [3, 5],
-        ]
-
-        for row_index, row in enumerate(BOARD_TEMPLATE):
-            for column_index in row:
-                self.points.add((column_index, row_index))
-
-    def draw_hexagon(self, screen, x, y, size, color):
-        hexagon_vertices = [(x + size * math.cos(angle), y + size * math.sin(angle)) for angle in
-                            [2 * math.pi / 6 * i + math.pi / 6 for i in range(6)]]
-        pygame.draw.polygon(screen, color, hexagon_vertices)
-        return hexagon_vertices
-
-    def display_board(self, screen, board_x, board_y):
-        color_board = (178, 161, 155)
-        color_line = (0, 0, 0)
-        for point in self.points:
-            x, y = board_x + point[0] * 41, board_y + point[1] * 23.5
-            self.draw_hexagon(screen, x, y, 45, color_board)
-            for i in range(6):
-                start_point = (x + 45 * math.cos(2 * math.pi / 6 * i + math.pi / 6),
-                               y + 45 * math.sin(2 * math.pi / 6 * i + math.pi / 6))
-                end_point = (x + 45 * math.cos(2 * math.pi / 6 * (i + 3) + math.pi / 6),
-                             y + 45 * math.sin(2 * math.pi / 6 * (i + 3) + math.pi / 6))
-                pygame.draw.line(screen, color_line, start_point, end_point, 2)
-
-    def reset_board(self):
-        self.points.clear()
-        self.place_points()
-
 class GameVsComputer:
     def __init__(self):
+        from Board import Board
         pygame.init()
         self.screen = pygame.display.set_mode((1200, 700))
         pygame.display.set_caption("Plateau de Jeu")
         self.font = pygame.font.SysFont(None, 36)
         self.board_wallpaper()
         self.board = Board(10.1, 18)
-        self.indexPosition = {}
-        self.position_coordinates = {}
+        self.indexPosition={}
+        self.position_coordinates={}
         self.positions_clics = [(559, 141), (638, 138),
                                 (515, 160), (598, 160), (678, 159),
                                 (476, 185), (556, 181), (639, 181), (718, 182),
@@ -88,32 +35,32 @@ class GameVsComputer:
                                 (476, 510), (556, 512), (639, 512), (718, 511),
                                 (518, 535), (598, 533), (678, 533),
                                 (559, 556), (639, 555)]
-        self.boardList = [[None, None, None, None, 0, None, 0, None, None, None, None],
-                             [None, None, None, 0, None, 0, None, 0, None, None, None],
-                             [None, None, 0, None, 0, None, 0, None, 0, None, None],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [None, None, 0, None, 0, None, 0, None, 0, None, None],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [0, None, 0, None, 0, None, 0, None, 0, None, 0],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [0, None, 0, None, 0, None, 0, None, 0, None, 0],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [0, None, 0, None, 0, None, 0, None, 0, None, 0],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [0, None, 0, None, 0, None, 0, None, 0, None, 0],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [None, None, 0, None, 0, None, 0, None, 0, None, None],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [None, None, 0, None, 0, None, 0, None, 0, None, None],
-                             [None, None, None, 0, None, 0, None, 0, None, None, None],
-                             [None, None, None, None, 0, None, 0, None, None, None, None]
+        self.boardList = [[None,None,None,None,0,None,0,None,None,None,None],
+                             [None,None,None,0,None,0,None,0,None,None,None],
+                             [None,None,0,None,0,None,0,None,0,None,None],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [None,None,0,None,0,None,0,None,0,None,None],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [0,None,0,None,0,None,0,None,0,None,0],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [0,None,0,None,0,None,0,None,0,None,0],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [0,None,0,None,0,None,0,None,0,None,0],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [0,None,0,None,0,None,0,None,0,None,0],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [None,None,0,None,0,None,0,None,0,None,None],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [None,None,0,None,0,None,0,None,0,None,None],
+                             [None,None,None,0,None,0,None,0,None,None,None],
+                             [None,None,None,None,0,None,0,None,None,None,None]
                              ]
 
         self.board.place_points()
         self.pawn_per_player = 5
         self.place_markers = {1: False, 2: False}
-        self.color_player_1 = (189, 61, 61)
-        self.color_player_2 = (99, 99, 99)
+        self.color_player_1 = (0, 120, 255)
+        self.color_player_2 = (255, 0, 0)
         self.current_player = 1
         self.pawn_on_board = {1: 0, 2: 0}
         self.board_width = self.board.width * 50
@@ -125,16 +72,25 @@ class GameVsComputer:
         self.pause_button_rect = pygame.Rect(20, 20, 100, 40)
         pygame.mixer.init()
         self.game_music = pygame.mixer.music.load('musiques/musique2.mp3')
+        option_instance = options.Options(self.screen, self.screen_width, self.screen_height)
+        self.volume = option_instance.get_volume()
         self.position_cells()
+        self.bot_marker_placed = False
+        self.pawn_delet = False
+        self.deleting_player = None
+        self.number_pawn_delte={1: 0, 2: 0}
+        self.game_over = False
+        self.victory_player = 0
 
     def play_game_music(self):
         pygame.mixer.music.stop()
+        pygame.mixer.music.set_volume(self.volume)
         pygame.mixer.music.play(-1)
 
     def board_wallpaper(self):
         script_dir = os.path.dirname(__file__)
         image_path = os.path.join(script_dir, "images", "fondplateau.png")
-        self.fond = pygame.image.load(image_path).convert()
+        self.fond = pygame.image.load(image_path).convert()  
         self.fond = pygame.transform.smoothscale(self.fond, self.screen.get_size())
 
     def show_player_turn(self):
@@ -150,7 +106,6 @@ class GameVsComputer:
 
         label_text = f"Tour du joueur {self.current_player}"
         label = self.font.render(label_text, True, (0, 0, 0))
-
         label_rect = label.get_rect()
         label_rect.centerx = rect_x + rect_width // 2
         label_rect.centery = rect_y + rect_height // 2
@@ -181,9 +136,8 @@ class GameVsComputer:
                 if cell == 0 and index_position < len(self.positions_clics):
                     x, y = self.positions_clics[index_position]
                     self.indexPosition[(x, y)] = (row_index, col_index)
-                    self.position_coordinates[(row_index, col_index)] = (x, y)
+                    self.position_coordinates[(row_index, col_index)]=(x, y)
                     index_position += 1
-        #print(self.positionIndex, self.positioncoords)
 
     def check_events(self):
         for event in pygame.event.get():
@@ -193,15 +147,18 @@ class GameVsComputer:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     x, y = event.pos
+
                     if self.pause_button_rect.collidepoint(x, y):
                         self.paused = not self.paused
-                    elif not self.paused and self.current_player != 2:
-                        self.find_clicked_cell(x, y)
-                        if self.current_player == 2:
-                            self.computer()
+                    elif not self.paused:
+                        if self.pawn_delet:
+                            self.delete_pawns(x, y)
+                        else:
+                            self.find_clicked_cell(x, y)
 
                     if self.paused:
                         menu_items_rects = [pygame.Rect(400, 180 + i * 50, 400, 40) for i in range(5)]
+
                         for i, rect in enumerate(menu_items_rects):
                             if rect.collidepoint(x, y):
                                 if i == 0:
@@ -215,127 +172,84 @@ class GameVsComputer:
                                 elif i == 4:
                                     self.return_main_menu()
 
-    def computer(self):
-        if self.pawn_on_board[2] >= self.pawn_per_player:
-            return
-
-        available_cells = [(row_index, col_index) for row_index, row in enumerate(self.boardList) for col_index, cell in
-                           enumerate(row) if cell == 0]
-        if available_cells:
-            row_index, col_index = random.choice(available_cells)
-            self.boardList[row_index][col_index] = 2
-            self.pawn_on_board[2] += 1
-            self.current_player = 1
-            self.place_marker_computer()
-            self.displacement()
 
     def find_clicked_cell(self, x, y):
-        hitbox_taille = 10
+        hitbox_taille = 20
         for key, value in self.indexPosition.items():
             cell_x, cell_y = key
             if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
-                    (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
+               (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
                 self.clic_value = value
-                self.place_pawn()
-                self.place_markers_on_board()
-                self.displacement()
-            elif self.current_player == 2:
-                self.computer()
-
+                if not self.pawn_delet:
+                    self.place_pawn() 
+                    self.place_markers_on_board()
+                    self.displacement()       
+                    
     def draw_pawn(self):
-        pawn_ray = 15
-        pawn_thickness = 2
+        pawn_ray = 20
+        pawn_thickness = 4
 
         for row in range(len(self.boardList)):
             for cell in range(len(self.boardList[row])):
-
+                
                 if self.boardList[row][cell] == 1:
-                    for key, value in self.position_coordinates.items():
-                        i, j = key
-                        if i == row and j == cell:
-                            x, y = value
+                    for key,value in self.position_coordinates.items():
+                        i,j=key
+                        if i==row and j==cell:
+                            x,y=value
                             pygame.draw.circle(self.screen, self.color_player_1, (x, y), pawn_ray, pawn_thickness)
                 elif self.boardList[row][cell] == 2:
-                    for key, value in self.position_coordinates.items():
-                        i, j = key
-                        if i == row and j == cell:
-                            x, y = value
-                            pygame.draw.circle(self.screen, self.color_player_2, (x, y), pawn_ray, pawn_thickness)
-
-    def draw_solo_marqueur(self):
-        radius_marker = 9
-        marker_thickness = 0
-        for row in range(len(self.boardList)):
-            for cell in range(len(self.boardList[row])):
-                if self.boardList[row][cell] == 5:
-                    for key, value in self.position_coordinates.items():
-                        i, j = key
-                        if i == row and j == cell:
-                            x, y = value
-                            pygame.draw.circle(self.screen, self.color_player_1, (x, y), radius_marker,
-                                               marker_thickness)
-                elif self.boardList[row][cell] == 6:
-                    for key, value in self.position_coordinates.items():
-                        i, j = key
-                        if i == row and j == cell:
-                            x, y = value
-                            pygame.draw.circle(self.screen, self.color_player_2, (x, y), radius_marker,
-                                               marker_thickness)
-                elif self.boardList[row][cell] == 10:
-                    for key, value in self.position_coordinates.items():
-                        i, j = key
-                        if i == row and j == cell:
-                            x, y = value
-                            pygame.draw.circle(self.screen, (0, 255, 0), (x, y), radius_marker, marker_thickness)
+                    for key,value in self.position_coordinates.items():
+                        i,j=key
+                        if i==row and j==cell:
+                            x,y=value
+                            pygame.draw.circle(self.screen, self.color_player_2, (x, y), pawn_ray, pawn_thickness)  
 
     def place_pawn(self):
-        row, cols = self.clic_value
+        row,cols=self.clic_value
         if self.pawn_on_board[self.current_player] >= self.pawn_per_player:
             return
 
         if self.boardList[row][cols] == 0:
-            if self.current_player == 1:
+            if self.current_player == 1 and self.pawn_on_board[1] < self.pawn_per_player:
                 self.boardList[row][cols] = 1
                 self.pawn_on_board[1] += 1
                 self.current_player = 2
-            elif self.current_player == 2:
+            elif self.current_player == 2 and self.pawn_on_board[2] < self.pawn_per_player:
                 self.boardList[row][cols] = 2
                 self.pawn_on_board[2] += 1
                 self.current_player = 1
 
     def draw_marker(self):
-        radius_marker = 9
+        radius_marker = 10
         marker_thickness = 0
-        pawn_ray = 15
-        pawn_thickness = 2
-
+        pawn_ray = 20
+        pawn_thickness = 4
+      
         for row in range(len(self.boardList)):
             for cell in range(len(self.boardList[row])):
-                if self.boardList[row][cell] == 3:
-                    for key, value in self.position_coordinates.items():
-                        i, j = key
-                        if i == row and j == cell:
-                            x, y = value
-                            pygame.draw.circle(self.screen, self.color_player_1, (x, y), radius_marker,
-                                               marker_thickness)
+                if self.boardList[row][cell]==3:
+                    for key,value in self.position_coordinates.items():
+                        i,j=key
+                        if i==row and j==cell:
+                            x,y=value
+                            pygame.draw.circle(self.screen, self.color_player_1, (x, y), radius_marker, marker_thickness)
                             pygame.draw.circle(self.screen, self.color_player_1, (x, y), pawn_ray, pawn_thickness)
-                elif self.boardList[row][cell] == 4:
-                    for key, value in self.position_coordinates.items():
-                        i, j = key
-                        if i == row and j == cell:
-                            x, y = value
-                            pygame.draw.circle(self.screen, self.color_player_2, (x, y), radius_marker,
-                                               marker_thickness)
+                elif self.boardList[row][cell]== 4:
+                    for key,value in self.position_coordinates.items():
+                        i,j=key
+                        if i==row and j==cell:
+                            x,y=value
+                            pygame.draw.circle(self.screen, self.color_player_2, (x, y), radius_marker, marker_thickness)
                             pygame.draw.circle(self.screen, self.color_player_2, (x, y), pawn_ray, pawn_thickness)
 
     def place_markers_on_board(self):
-        row, cols = self.clic_value
+        row,cols=self.clic_value
         if self.pawn_on_board[self.current_player] < self.pawn_per_player:
             return
-
         if self.place_markers[self.current_player]:
             return
-
+        
         if self.current_player == 1:
             if self.boardList[row][cols] == 1:
                 self.boardList[row][cols] = 3
@@ -351,57 +265,77 @@ class GameVsComputer:
     def check_vertical_high(self, row, cols, row_marker, cols_marker):
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         for i in range(row_marker, row - 1, -1):
             if self.boardList[i][cols] == 1 or self.boardList[i][cols] == 2:
                 return
         for i in range(row_marker, row - 1, -1):
             if self.boardList[i][cols] == 5 or self.boardList[i][cols] == 6:
                 coords.append((i, cols))
+                if tracking==False:
+                    tracking = True
+            elif self.boardList[i][cols]==0 and tracking==True and i!=row:
+                sequence_broken=True
+                break
+        if sequence_broken==False and tracking==True:
                 x, y = coords[-1]
-
                 if x - 2 == row and y == cols:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
+                        self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
                         self.current_player = self.current_player % 2 + 1
-                        #self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0 and self.boardList[row][cols] == 0:
-            self.boardList[row][cols] = self.current_player
-            self.boardList[row_marker][cols_marker] = marker
-            self.current_player = self.current_player % 2 + 1
-            #self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
-
-    def check_vertical_bottom(self, row, cols, row_marker, cols_marker):
-        marker = self.current_player + 4
-        coords = []
-        for i in range(row_marker, row + 1, +1):
-            if self.boardList[i][cols] == 1 or self.boardList[i][cols] == 2:
-                return
-        for i in range(row_marker, row + 1, +1):
-            if self.boardList[i][cols] == 5 or self.boardList[i][cols] == 6:
-                coords.append((i, cols))
-                x, y = coords[-1]
-                if x + 2 == row and y == cols:
-                    if self.boardList[row][cols] == 0:
-                        self.boardList[row][cols] = self.current_player
-                        self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
-                        #self.return_marker_vertical_bottom(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0:
-            if self.boardList[row][cols] == 0:
+        else:
+            if len(coords) == 0 and self.boardList[row][cols] == 0:
                 self.boardList[row][cols] = self.current_player
                 self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
-                #print('joueur actuel :', self.current_player)
-                #self.return_marker_vertical_bottom(row, cols, row_marker, cols_marker)
+                self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
+                self.alignment_verification()
+                self.current_player = self.current_player % 2 + 1                
+
+    def check_vertical_bottom(self,row,cols,row_marker,cols_marker):
+        marker=self.current_player+4
+        coords=[]
+        tracking = False
+        sequence_broken = False
+        for i in range(row_marker,row+1,+1):
+            if self.boardList[i][cols] == 1 or self.boardList[i][cols] == 2:
+                return
+        for i in range(row_marker,row+1,+1):
+            if self.boardList[i][cols]==5 or self.boardList[i][cols]==6 :
+                coords.append((i,cols))
+                if tracking==False:
+                    tracking = True
+            elif self.boardList[i][cols]==0 and tracking==True and i!=row:
+                sequence_broken=True
+                break
+        if sequence_broken==False and tracking==True:
+                x,y=coords[-1]
+                if x+2==row and y==cols:
+                    if self.boardList[row][cols]==0:
+                        self.boardList[row][cols] = self.current_player
+                        self.boardList[row_marker][cols_marker] = marker
+                        self.return_marker_vertical_bottom(row,cols,row_marker,cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player%2+1
+        else:            
+            if len(coords)==0:
+                if self.boardList[row][cols]==0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.return_marker_vertical_bottom(row,cols,row_marker,cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player%2+1                    
 
     def check_diagonal_right_high(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         num_steps = min(row_marker - row, cols - cols_marker) + 1
         for step in range(num_steps):
             i = row_marker - step
@@ -413,29 +347,36 @@ class GameVsComputer:
             j = cols_marker + step
             if self.boardList[i][j] == 5 or self.boardList[i][j] == 6:
                 coords.append((i, j))
+                if tracking == False:
+                    tracking = True
+            elif self.boardList[i][j] == 0 and tracking == True and i != row and j != cols:
+                sequence_broken = True
+                break
+        if sequence_broken == False and tracking == True:
                 x, y = coords[-1]
                 if x - 1 == row and y + 1 == cols:
-                    #print('Diagonal droite haute condition 1')
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
-                        self.current_player = self.current_player % 2 + 1
-                        #self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0:
-            #print('Diagonal droite haute condition 2')
-            if self.boardList[row][cols] == 0:
-                self.boardList[row][cols] = self.current_player
-                self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
-                #print('Joueur actuel :', self.current_player)
-                #self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
+                        self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
+                        self.current_player = self.current_player % 2 + 1                        
+        else:           
+            if len(coords) == 0:
+                if self.boardList[row][cols] == 0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.return_marker_diagonal_right_high(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
 
     def check_diagonal_left_high(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         num_steps = min(row_marker - row, cols_marker - cols) + 1
         for step in range(num_steps):
             i = row_marker - step
@@ -447,29 +388,36 @@ class GameVsComputer:
             j = cols_marker - step
             if self.boardList[i][j] == 5 or self.boardList[i][j] == 6:
                 coords.append((i, j))
+                if tracking == False:
+                    tracking = True
+            elif self.boardList[i][j] == 0 and tracking == True and i != row and j != cols:
+                sequence_broken = True
+                break
+        if sequence_broken == False and tracking == True:
                 x, y = coords[-1]
                 if x - 1 == row and y - 1 == cols:
-                    #print('Diagonal gauche haute condition 1')
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
+                        self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
                         self.current_player = self.current_player % 2 + 1
-                        #self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0:
-            #print('Diagonal gauche haute condition 2')
-            if self.boardList[row][cols] == 0:
-                self.boardList[row][cols] = self.current_player
-                self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
-                #self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
-                #print('Joueur actuel :', self.current_player)
+        else:           
+            if len(coords) == 0:
+                if self.boardList[row][cols] == 0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.return_marker_diagonal_left_high(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1                    
 
     def check_diagonal_left_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         num_steps = min(row - row_marker, cols_marker - cols) + 1
         for step in range(num_steps):
             i = row_marker + step
@@ -481,29 +429,36 @@ class GameVsComputer:
             j = cols_marker - step
             if self.boardList[i][j] == 5 or self.boardList[i][j] == 6:
                 coords.append((i, j))
+                if tracking == False:
+                    tracking = True
+            elif self.boardList[i][j] == 0 and tracking == True and i != row and j != cols:
+                sequence_broken = True
+                break
+        if sequence_broken == False and tracking == True:
                 x, y = coords[-1]
                 if x + 1 == row and y - 1 == cols:
-                    #print('Diagonal gauche basse condition 1')
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
+                        self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
                         self.current_player = self.current_player % 2 + 1
-                        #self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0:
-            #print('Diagonal gauche basse condition 2')
-            if self.boardList[row][cols] == 0:
-                self.boardList[row][cols] = self.current_player
-                self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
-                #self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
-                #print('Joueur actuel :', self.current_player)
+        else:            
+            if len(coords) == 0:
+                if self.boardList[row][cols] == 0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.return_marker_diagonal_left_low(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1                    
 
     def check_diagonal_right_low(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
         marker = self.current_player + 4
         coords = []
+        tracking = False
+        sequence_broken = False
         num_steps = min(row - row_marker, cols - cols_marker) + 1
         for step in range(num_steps):
             i = row_marker + step
@@ -515,49 +470,265 @@ class GameVsComputer:
             j = cols_marker + step
             if self.boardList[i][j] == 5 or self.boardList[i][j] == 6:
                 coords.append((i, j))
+                if tracking == False:
+                    tracking = True
+            elif self.boardList[i][j] == 0 and tracking == True and i != row and j != cols:
+                sequence_broken = True
+                break
+        if sequence_broken == False and tracking == True:
                 x, y = coords[-1]
                 if x + 1 == row and y + 1 == cols:
                     if self.boardList[row][cols] == 0:
                         self.boardList[row][cols] = self.current_player
                         self.boardList[row_marker][cols_marker] = marker
+                        self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
+                        self.alignment_verification()
                         self.current_player = self.current_player % 2 + 1
-                        #self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
-                    break
-        if len(coords) == 0:
-            if self.boardList[row][cols] == 0:
-                self.boardList[row][cols] = self.current_player
-                self.boardList[row_marker][cols_marker] = marker
-                self.current_player = self.current_player % 2 + 1
-                #self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
+        else:
+            if len(coords) == 0:
+                if self.boardList[row][cols] == 0:
+                    self.boardList[row][cols] = self.current_player
+                    self.boardList[row_marker][cols_marker] = marker
+                    self.return_marker_diagonal_right_low(row, cols, row_marker, cols_marker)
+                    self.alignment_verification()
+                    self.current_player = self.current_player % 2 + 1
+                    
 
-    def displacement(self):
-        pawn_marker = self.current_player + 2
-        row, cols = self.clic_value
-        if self.place_markers[self.current_player] == True:
+    def displacement (self):
+        pawn_marker=self.current_player+2
+        row,cols=self.clic_value
+        if self.place_markers[1] == True:
             for rows in range(len(self.boardList)):
                 for cell in range(len(self.boardList[rows])):
                     if self.boardList[rows][cell] == pawn_marker:
                         row_marker, cols_marker = rows, cell
-                        if cols - cols_marker == 0:
-                            if row_marker > row:
-                                self.check_vertical_high(row, cols, row_marker, cols_marker)
-                                #print("vertical hautte")
-                            elif row_marker < row:
-                                self.check_vertical_bottom(row, cols, row_marker, cols_marker)
-                                #print("vertical basse")
-                        elif row_marker < row and cols_marker < cols:
-                            self.check_diagonal_right_low(row, cols, row_marker, cols_marker)
-                            #print("diagonal droite basse")
-                        elif row_marker > row and cols_marker < cols:
-                            self.check_diagonal_right_high(row, cols, row_marker, cols_marker)
-                            #print("diagonal droite hautte")
-                        elif row_marker > row and cols_marker > cols:
-                            self.check_diagonal_left_high(row, cols, row_marker, cols_marker)
-                            #print("diagonal gauche hautte")
-                        elif row_marker < row and cols_marker > cols:
-                            self.check_diagonal_left_low(row, cols, row_marker, cols_marker)
-                            #print("diagonal gauche basse")
+                        if cols-cols_marker == 0:
+                            if row_marker>row:
+                                self.check_vertical_high(row,cols,row_marker,cols_marker)
+                            elif row_marker<row:
+                                self.check_vertical_bottom(row,cols,row_marker,cols_marker)
+                        elif row_marker<row and cols_marker<cols:
+                            self.check_diagonal_right_low(row,cols,row_marker,cols_marker)
+                        elif row_marker>row and cols_marker<cols:
+                            self.check_diagonal_right_high(row,cols,row_marker,cols_marker)
+                        elif row_marker>row and cols_marker>cols:
+                            self.check_diagonal_left_high(row,cols,row_marker,cols_marker) 
+                        elif row_marker<row and cols_marker>cols:
+                            self.check_diagonal_left_low(row,cols,row_marker,cols_marker)
 
+    def draw_solo_marqueur(self):
+        radius_marker = 9
+        marker_thickness = 0
+        for row in range(len(self.boardList)):
+            for cell in range(len(self.boardList[row])):
+                if self.boardList[row][cell]==5:
+                    for key,value in self.position_coordinates.items():
+                        i,j=key
+                        if i==row and j==cell:
+                            x,y=value
+                            pygame.draw.circle(self.screen, self.color_player_1, (x, y), radius_marker, marker_thickness)
+                elif self.boardList[row][cell]==6:
+                    for key,value in self.position_coordinates.items():
+                        i,j=key
+                        if i==row and j==cell:
+                            x,y=value
+                            pygame.draw.circle(self.screen, self.color_player_2, (x, y), radius_marker, marker_thickness)
+                elif self.boardList[row][cell]==10:
+                    for key,value in self.position_coordinates.items():
+                        i,j=key
+                        if i==row and j==cell:
+                            x,y=value
+                            pygame.draw.circle(self.screen,(0,255,0), (x, y), radius_marker, marker_thickness)            
+
+    def return_marker_vertical_high(self, row, cols, row_marker, cols_marker):
+        for i in range(row_marker-1, row - 1, -1):
+            if 0<=i<=18:
+                if self.boardList[i][cols_marker] == 5:
+                    self.boardList[i][cols_marker] = 6
+                elif self.boardList[i][cols_marker] == 6:
+                    self.boardList[i][cols_marker] = 5
+
+    def return_marker_vertical_bottom(self, row, cols, row_marker, cols_marker):
+        for i in range(row_marker+1,row+1,+1):
+            if 0<=i<=18:
+                if self.boardList[i][cols_marker] == 5:
+                    self.boardList[i][cols_marker] = 6
+                elif self.boardList[i][cols_marker] == 6:
+                    self.boardList[i][cols_marker] = 5
+
+    def return_marker_diagonal_right_low(self, row, cols, row_marker, cols_marker):
+        row=row-1
+        cols=cols-1
+        row_marker=row_marker+1
+        cols_marker=cols_marker+1
+        num_steps = min(row - row_marker, cols - cols_marker) + 2
+        for step in range(num_steps):
+            i = row_marker  + step
+            j = cols_marker  + step
+            if 0<=i<=18 and 0<=j<=10:
+                if self.boardList[i][j]==5:
+                    self.boardList[i][j] = 6
+                elif self.boardList[i][j]==6:
+                    self.boardList[i][j] = 5
+
+    def return_marker_diagonal_right_high(self, row, cols, row_marker, cols_marker):
+        row=row+1
+        cols=cols-1
+        row_marker=row_marker-1
+        cols_marker=cols_marker+1
+        num_steps = min(row_marker - row, cols - cols_marker)+2
+        for step in range(num_steps):
+            i = row_marker - step
+            j = cols_marker + step
+            if 0<=i<=18 and 0<=j<=10:
+                if self.boardList[i][j] == 5:
+                    self.boardList[i][j] = 6
+                elif self.boardList[i][j] == 6:
+                    self.boardList[i][j] = 5
+
+    def return_marker_diagonal_left_high(self, row, cols, row_marker, cols_marker):
+        row=row+1
+        cols=cols+1
+        row_marker=row_marker-1
+        cols_marker=cols_marker-1
+        num_steps = min(row_marker - row, cols_marker - cols) + 2
+        for step in range(num_steps):
+            i = row_marker - step
+            j = cols_marker - step
+            if 0<=i<=18 and 0<=j<=10:
+                if self.boardList[i][j] == 5:
+                    self.boardList[i][j] = 6
+                elif self.boardList[i][j] == 6:
+                    self.boardList[i][j] = 5
+
+    def return_marker_diagonal_left_low(self, row, cols, row_marker, cols_marker):
+        row=row-1
+        cols=cols+1
+        row_marker=row_marker+1
+        cols_marker=cols_marker-1
+        num_steps = min(row - row_marker, cols_marker - cols) + 2
+        for step in range(num_steps):
+            i = row_marker + step
+            j = cols_marker - step
+            if 0<=i<=18 and 0<=j<=10:
+                if self.boardList[i][j] == 5:
+                    self.boardList[i][j] = 6
+                elif self.boardList[i][j] == 6:
+                    self.boardList[i][j] = 5
+
+    def alignment_verification(self):
+        self.vertical_alignment()
+        self.alignment_diag_left_to_right()
+        self.alignment_diagonal_right_to_left()
+        
+    def vertical_alignment(self):
+        marker_current_player = self.current_player + 4
+        if self.current_player % 2 == 0:
+            marker_other_player = 5
+        else:
+            marker_other_player = 6
+        for col in range(11):
+            alignment = 0
+            coords_alignment = []
+            for row in range(19):
+                if self.boardList[row][col] == marker_current_player:
+                    alignment += 1
+                    coords_alignment.append((row, col))
+                    if alignment == 5:
+                        self.deleting_player = self.current_player
+                        self.pawn_delet = True
+                        self.delte_aligments(coords_alignment)
+                        break
+                elif self.boardList[row][col]==0 or self.boardList[row][col] == marker_other_player or self.boardList[row][col] == 1 or self.boardList[row][col]==2:
+                    alignment = 0
+                    coords_alignment = []
+
+    def alignment_diag_left_to_right(self):
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        max_rows = 19
+        max_columns = 11
+        for start_row in range(max_rows):
+            self.check_diagonal_left_to_right(start_row, 0, marker_current_player, marker_other_player, max_rows, max_columns)
+
+        for start_col in range(1, max_columns):  
+            self.check_diagonal_left_to_right(0, start_col, marker_current_player, marker_other_player, max_rows, max_columns)
+
+    def check_diagonal_left_to_right(self, start_row, start_col, marker_current_player, marker_other_player, max_rows, max_columns):
+        alignment = 0
+        coords_alignment = []
+
+        step_limit = min(max_rows - start_row, max_columns - start_col)
+        for step in range(step_limit):
+            i, j = start_row + step, start_col + step
+            if self.boardList[i][j] == marker_current_player:
+                alignment += 1
+                coords_alignment.append((i, j))
+                if alignment == 5:
+                    self.deleting_player = self.current_player
+                    self.pawn_delet = True
+                    self.delte_aligments(coords_alignment)
+                    break
+            elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
+                alignment = 0
+                coords_alignment = []
+
+    def alignment_diagonal_right_to_left(self):
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        max_rows = 19
+        max_columns = 11
+        
+        for start_row in range(max_rows):
+            self.check_diagonal_right_to_left(start_row, max_columns - 1, marker_current_player, marker_other_player, max_rows, max_columns)
+        for start_col in range(max_columns - 1):
+            self.check_diagonal_right_to_left(0, start_col, marker_current_player, marker_other_player, max_rows, max_columns)
+
+    def check_diagonal_right_to_left(self, start_row, start_col, marker_current_player, marker_other_player, max_rows, max_columns):
+        alignment = 0
+        coords_alignment = []
+
+        step_limit = min(max_rows - start_row, start_col + 1) 
+        for step in range(step_limit):
+            i, j = start_row + step, start_col - step
+            if self.boardList[i][j] == marker_current_player:
+                alignment += 1
+                coords_alignment.append((i, j))
+                if alignment == 5:
+                    self.deleting_player = self.current_player
+                    self.pawn_delet = True
+                    self.delte_aligments(coords_alignment)
+                    break
+            elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
+                alignment = 0
+                coords_alignment = []
+
+    def delte_aligments(self,coords):
+        for x,y in coords:
+            self.boardList[x][y]=0
+
+    def delete_pawns(self, x, y):
+        if not self.pawn_delet:
+            return
+        elif self.deleting_player == 2:
+            while self.pawn_delet:
+                self.computer_deletepawn()
+            self.pawn_delet = False
+        else:
+            hitbox_taille = 20
+            for key, value in self.indexPosition.items():
+                cell_x, cell_y = key
+                if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
+                (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
+                    row, col = value
+                    if self.boardList[row][col] == self.deleting_player:
+                        self.boardList[row][col] = 0
+                        self.number_pawn_delte[self.deleting_player] += 1
+                        if self.number_pawn_delte[self.deleting_player] == 3:
+                            self.victory_player = 1
+                            self.display_winner()
+                        self.pawn_delet = False
+                        break
 
     def draw_remaining_pions(self):
         pawn_radius = 15
@@ -570,41 +741,115 @@ class GameVsComputer:
 
         for i in range(1, 3):
             x = column_x1 if i == 1 else column_x2
-            y = column_y + column_height - (self.pawn_per_player - self.pawn_on_board[i]) * (
-                        2 * pawn_gap + 2 * pawn_radius)
+            y = column_y + column_height - (self.pawn_per_player - self.pawn_on_board[i]) * (2 * pawn_gap + 2 * pawn_radius)
             remaining_pions = self.pawn_per_player - self.pawn_on_board[i]
 
             for _ in range(remaining_pions):
-                pygame.draw.circle(self.screen, self.color_player_1 if i == 1 else self.color_player_2,
-                                   (x + column_width // 2, y), pawn_radius)
+                pygame.draw.circle(self.screen, self.color_player_1 if i == 1 else self.color_player_2, (x + column_width // 2, y), pawn_radius)
                 y += 2 * (pawn_radius + pawn_gap)
+    
+    def draw_button(self, text, x, y, width, height, action=None):
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_click = pygame.mouse.get_pressed()
+
+        if x + width > mouse_pos[0] > x and y + height > mouse_pos[1] > y:
+            pygame.draw.rect(self.screen, (128, 128, 128), (x, y, width, height))
+            pygame.draw.rect(self.screen, (0, 0, 0), (x, y, width, height), 3)
+            if mouse_click[0] == 1 and action is not None:
+                action()
+        else:
+            pygame.draw.rect(self.screen, (245, 245, 220), (x, y, width, height))
+            pygame.draw.rect(self.screen, (0, 0, 0), (x, y, width, height), 3)
+
+        button_font = pygame.font.SysFont(None, 30)
+        button_text = button_font.render(text, True, (0, 0, 0))
+        text_rect = button_text.get_rect(center=(x + width // 2, y + height // 2))
+        self.screen.blit(button_text, text_rect)
+
+    def display_winner(self):
+        dark_overlay = pygame.Surface(self.screen.get_size())
+        dark_overlay.set_alpha(128)
+        dark_overlay.fill((0, 0, 0))
+        self.screen.blit(dark_overlay, (0, 0))
+
+        self.screen.blit(self.fond, (0, 0))
+
+        ring_radius = 30
+        ring_thickness = 5
+        ring_spacing = 50
+
+        pygame.draw.rect(self.screen, (245, 245, 220), (300, 150, 600, 300))
+        pygame.draw.rect(self.screen, (0, 0, 0), (300, 150, 600, 300), 10)
+
+        if self.victory_player == 1:
+            victory_font = pygame.font.SysFont(None, 70)
+            victory_text = "Joueur 1 a gagné !"
+            label = victory_font.render(victory_text, True, (0, 0, 0))
+            label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 250))
+            self.screen.blit(label, label_rect)
+
+        elif self.victory_player == 2:
+            victory_font = pygame.font.SysFont(None, 70)
+            victory_text = "L'ordinateur a gagné !"
+            label = victory_font.render(victory_text, True, (0, 0, 0))
+            label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 250))
+            self.screen.blit(label, label_rect)
+
+
+        x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 150
+        y = self.screen_height - (2 * ring_radius + 20)
+        for i in range(self.number_pawn_delte[1]):
+            pygame.draw.circle(self.screen, self.color_player_1, (x + i * (ring_radius + ring_spacing), y - 250), ring_radius, ring_thickness)
+
+        x_right = (self.screen_width + (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 355
+        y_right = self.screen_height - (2 * ring_radius + 20)
+        for i in range(self.number_pawn_delte[2]-1, -1, -1):
+            pygame.draw.circle(self.screen, self.color_player_2, (x_right - i * (ring_radius + ring_spacing), y_right - 250), ring_radius, ring_thickness)
+
+
+        button_width = 200
+        button_height = 50
+        button_x = self.screen.get_rect().centerx - button_width * 1.25
+        button_y = 600
+        self.draw_button("Menu principal", button_x, button_y, button_width, button_height, self.return_main_menu)
+        self.draw_button("Rejouer", button_x + button_width * 1.5, button_y, button_width, button_height, self.restart_game)
+
+        pygame.display.flip()
 
     def restart_game(self):
-        self.boardList = [[None, None, None, None, 0, None, 0, None, None, None, None],
-                             [None, None, None, 0, None, 0, None, 0, None, None, None],
-                             [None, None, 0, None, 0, None, 0, None, 0, None, None],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [None, None, 0, None, 0, None, 0, None, 0, None, None],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [0, None, 0, None, 0, None, 0, None, 0, None, 0],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [0, None, 0, None, 0, None, 0, None, 0, None, 0],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [0, None, 0, None, 0, None, 0, None, 0, None, 0],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [0, None, 0, None, 0, None, 0, None, 0, None, 0],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [None, None, 0, None, 0, None, 0, None, 0, None, None],
-                             [None, 0, None, 0, None, 0, None, 0, None, 0, None],
-                             [None, None, 0, None, 0, None, 0, None, 0, None, None],
-                             [None, None, None, 0, None, 0, None, 0, None, None, None],
-                             [None, None, None, None, 0, None, 0, None, None, None, None]
-                             ]
+        self.boardList = [[None,None,None,None,0,None,0,None,None,None,None],
+                             [None,None,None,0,None,0,None,0,None,None,None],
+                             [None,None,0,None,0,None,0,None,0,None,None],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [None,None,0,None,0,None,0,None,0,None,None],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [0,None,0,None,0,None,0,None,0,None,0],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [0,None,0,None,0,None,0,None,0,None,0],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [0,None,0,None,0,None,0,None,0,None,0],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [0,None,0,None,0,None,0,None,0,None,0],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [None,None,0,None,0,None,0,None,0,None,None],
+                             [None,0,None,0,None,0,None,0,None,0,None],
+                             [None,None,0,None,0,None,0,None,0,None,None],
+                             [None,None,None,0,None,0,None,0,None,None,None],
+                             [None,None,None,None,0,None,0,None,None,None,None]
+                            ]
 
         self.pawn_on_board = {1: 0, 2: 0}
         self.current_player = 1
         self.paused = False
         self.place_markers = {1: False, 2: False}
+        self.pawn_delet = False
+        self.deleting_player = None
+        self.number_pawn_delte = {1: 0, 2: 0}
+        self.game_over = False
+        self.bot_marker_placed = False
+        self.positions_clics = []
+        self.pawn_per_player = 5
+        self.number_pawn_delte = {1: 0, 2: 0}
 
     def save_game(self):
         pass
@@ -617,13 +862,15 @@ class GameVsComputer:
     def return_main_menu(self):
         menu_instance = menu.Menu(self.screen, self.screen_width, self.screen_height)
         menu_instance.run()
+        options_instance = options.Options(self.screen, self.screen_width, self.screen_height)
+        self.volume = options_instance.get_volume()
         pass
 
     def draw_cells(self):
         radius_circle = 15
         circle_thickness = 4
-        none_color = (255, 0, 0)
-        zero_color = (0, 255, 0)
+        none_color = (255, 0, 0)  
+        zero_color = (0, 255, 0)  
 
         index_position = 0
 
@@ -639,58 +886,112 @@ class GameVsComputer:
                 elif cell == 0:
                     pygame.draw.circle(self.screen, zero_color, (x, y), radius_circle, circle_thickness)
 
-                index_position += 1
+                index_position += 1   
 
-    def display_cells(self):
-        radius_marker = 9
-        marker_thickness = 0
-        for key, value in self.position_coordinates.items():
-            x, y = key
-            row, coll = value
-            if coll == 0:
-                pygame.draw.circle(self.screen, (255, 0, 0), (x, y), radius_marker, marker_thickness)
-            elif coll == 1:
-                pygame.draw.circle(self.screen, (0, 255, 0), (x, y), radius_marker, marker_thickness)
-            elif coll == 2:
-                pygame.draw.circle(self.screen, (0, 0, 255), (x, y), radius_marker, marker_thickness)
-            elif coll == 3:
-                pygame.draw.circle(self.screen, (0, 0, 0), (x, y), radius_marker, marker_thickness)
-            elif coll == 4:
-                pygame.draw.circle(self.screen, (255, 255, 0), (x, y), radius_marker, marker_thickness)
-            elif coll == 5:
-                pygame.draw.circle(self.screen, (255, 0, 255), (x, y), radius_marker, marker_thickness)
-            elif coll == 6:
-                pygame.draw.circle(self.screen, (0, 255, 255), (x, y), radius_marker, marker_thickness)
-            elif coll == 7:
-                pygame.draw.circle(self.screen, (255, 255, 255), (x, y), radius_marker, marker_thickness)
-            elif coll == 8:
-                pygame.draw.circle(self.screen, (128, 0, 128), (x, y), radius_marker, marker_thickness)
-            elif coll == 9:
-                pygame.draw.circle(self.screen, (64, 224, 208), (x, y), radius_marker, marker_thickness)
-            elif coll == 10:
-                pygame.draw.circle(self.screen, (255, 165, 0), (x, y), radius_marker, marker_thickness)
-            elif coll == 11:
-                pygame.draw.circle(self.screen, (169, 169, 169), (x, y), radius_marker, marker_thickness)
+    def draw_rings(self):
+        ring_radius = 30
+        ring_thickness = 5
+        ring_spacing = 50
 
-    def place_marker_computer(self):
-        row, cols = self.clic_value
-        if self.pawn_on_board[self.current_player] < self.pawn_per_player:
-            return
+        x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2
+        y = self.screen_height - (2 * ring_radius + 20)
 
-        if self.place_markers[self.current_player]:
-            return
+        for i in range(3):
+            if self.number_pawn_delte[1]  >= i + 1:
+                color = self.color_player_1
+            else:
+                color = (128, 128, 128)
 
-        if self.current_player == 1:
-            if self.boardList[row][cols] == 1:
-                self.boardList[row][cols] = 3
-                self.place_markers[1] = True
-                self.place_markers[2] = False
+            pygame.draw.circle(self.screen, color, (x + i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
 
-        elif self.current_player == 2:
-            if self.boardList[row][cols] == 2:
-                self.boardList[row][cols] = 4
-                self.place_markers[2] = True
-                self.place_markers[1] = False
+        x = (self.screen_width + (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 510
+        y = self.screen_height - (2 * ring_radius + 20)
+
+        for i in range(2, -1, -1):
+            if self.number_pawn_delte[2]  >= i + 1:
+                color = self.color_player_2
+            else:
+                color = (128, 128, 128)
+
+            pygame.draw.circle(self.screen, color, (x - i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
+
+        if self.number_pawn_delte[1] == 3 or self.number_pawn_delte[2] == 3:
+            self.game_over = True
+
+    def Computers(self):
+        deplacement = False
+        if self.current_player == 2:
+            if self.pawn_on_board[2] < self.pawn_per_player:
+                while not self.comptureur_pawn():
+                    pass
+            elif self.pawn_on_board[2] == self.pawn_per_player and not self.bot_marker_placed:
+                while not self.computer_marker():
+                    pass
+                self.bot_marker_placed = True
+
+            for j in range(11):
+                for i in range(19):
+                    if self.boardList[i][j] == 4:
+                        self.place_markers[2] = True
+                        self.place_markers[1] = False
+                        while not deplacement:
+                            deplacement = self.computer_deplacement(i, j)
+                        self.bot_marker_placed = False
+
+    def comptureur_pawn(self):
+        i = random.randint(0, 18)
+        j = random.randint(0, 10)
+        if self.boardList[i][j] == 0:
+            self.boardList[i][j] = 2
+            self.pawn_on_board[2] += 1
+            self.current_player = 1
+            return True
+        return False
+
+    def computer_marker(self):
+        if self.bot_marker_placed:
+            return True
+        i = random.randint(0, 18)
+        j = random.randint(0, 10)
+        if self.boardList[i][j] == 2:
+            self.boardList[i][j] = 4
+            self.bot_marker_placed = True
+            return True
+        return False
+
+    def computer_deplacement(self, row_marker, cols_marker):
+        row = random.randint(0, 18)
+        cols = random.randint(0, 10)
+        if cols - cols_marker == 0:
+            if row_marker > row:
+                self.check_vertical_high(row, cols, row_marker, cols_marker)
+            elif row_marker < row:
+                self.check_vertical_bottom(row, cols, row_marker, cols_marker)
+        elif row_marker < row and cols_marker < cols:
+            self.check_diagonal_right_low(row, cols, row_marker, cols_marker)
+        elif row_marker > row and cols_marker < cols:
+            self.check_diagonal_right_high(row, cols, row_marker, cols_marker)
+        elif row_marker > row and cols_marker > cols:
+            self.check_diagonal_left_high(row, cols, row_marker, cols_marker)
+        elif row_marker < row and cols_marker > cols:
+            self.check_diagonal_left_low(row, cols, row_marker, cols_marker)
+        if self.boardList[row_marker][cols_marker] != 4:
+            self.bot_marker_placed = False
+            return True
+        return False
+
+    def computer_deletepawn(self):
+        row = random.randint(0, 18)
+        col = random.randint(0, 10)
+        if self.boardList[row][col] == 2:
+            self.boardList[row][col] = 0
+            self.number_pawn_delte[self.deleting_player] += 1
+            if self.number_pawn_delte[self.deleting_player] == 3:
+                self.victory_player = 2
+                self.display_winner()
+            self.pawn_delet = False
+            self.current_player = 1
+
 
     def start(self):
         self.play_game_music()
@@ -704,13 +1005,17 @@ class GameVsComputer:
             self.screen.blit(self.fond, (0, 0))
             if self.paused:
                 self.show_menu_pause()
+            elif self.game_over:
+                self.display_winner()
             else:
                 self.show_player_turn()
                 self.draw_remaining_pions()
                 self.board.display_board(self.screen, self.board_x, self.board_y)
+                self.Computers()
                 self.draw_pawn()
                 self.draw_marker()
                 self.draw_solo_marqueur()
+                self.draw_rings()
 
                 pygame.draw.rect(self.screen, (245, 245, 220), self.pause_button_rect)
                 pygame.draw.rect(self.screen, (0, 0, 0), self.pause_button_rect, 2)
@@ -724,4 +1029,4 @@ class GameVsComputer:
 
 if __name__ == "__main__":
     game = GameVsComputer()
-    game.start()
+    game.run()
