@@ -160,8 +160,6 @@ class blitzGame:
                                     self.paused = False
                                 elif i == 1:  
                                     self.restart_game()
-                                elif i == 2:  
-                                    self.save_game()
                                 elif i == 3:
                                     self.show_options()
                                 elif i == 4: 
@@ -770,7 +768,7 @@ class blitzGame:
             self.victory_player = 1
 
         victory_font = pygame.font.SysFont(None, 70)
-        victory_text = f"Joueur {self.victory_player} a gagné !"
+        victory_text = f"Le Joueur {self.victory_player} a gagné !"
         label = victory_font.render(victory_text, True, (0, 0, 0))
         label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 300))
         self.screen.blit(label, label_rect)
@@ -814,9 +812,6 @@ class blitzGame:
         self.game_over = False
         self.victory_player = None
 
-    def save_game(self):
-        pass
-
     def show_options(self):
         options_instance = options.Options(self.screen, self.screen.get_width(), self.screen.get_height())
         options_instance.run()
@@ -849,7 +844,8 @@ class blitzGame:
                 elif cell == 0:
                     pygame.draw.circle(self.screen, zero_color, (x, y), radius_circle, circle_thickness)
 
-                index_position += 1        
+                index_position += 1     
+
     def start(self):
         self.play_game_music()
         pause_font = pygame.font.SysFont(None, 30)

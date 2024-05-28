@@ -60,7 +60,7 @@ class Options:
 
             volume_text_x = self.volume_slider.slider_x + self.volume_slider.slider_width // 2
             volume_text_y = self.volume_slider.slider_y - 70
-            self.draw_text("Volume Musiques", (255, 255, 255), volume_text_x, volume_text_y)
+            self.draw_text("Volume Musique", (255, 255, 255), volume_text_x, volume_text_y)
 
             self.volume_slider.draw()
             if self.draw_button("Retour", 50, 50, 150, 50, (255, 255, 255, 128), (0, 0, 0), action="retour", radius=10):

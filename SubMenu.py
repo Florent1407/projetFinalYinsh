@@ -1,8 +1,9 @@
 import pygame
 import os
-import Board
 from Game import Game
 from blitzGame import blitzGame
+from vsOrdi import GameVsComputer
+from vsOrdiBlitz import GameVsComputerBlitz
 
 class SubMenu:
     def __init__(self, window, width, height):
@@ -20,7 +21,6 @@ class SubMenu:
         self.window.blit(text_obj, text_rect)
 
     def draw_button(self, text, x, y, width, height, background_color, border_color, action=None, radius=0):
-        from vsOrdi import GameVsComputer
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
 
@@ -43,6 +43,10 @@ class SubMenu:
 
                 elif action == "local_blitz":
                     game_instance = blitzGame()
+                    game_instance.run()
+
+                elif action == "ordinateur_blitz":
+                    game_instance = GameVsComputerBlitz()
                     game_instance.run()
 
         self.draw_text(text, (0, 0, 0), x + width / 2, y + height / 2)

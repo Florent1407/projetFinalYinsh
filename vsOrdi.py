@@ -165,8 +165,6 @@ class GameVsComputer:
                                     self.paused = False
                                 elif i == 1:
                                     self.restart_game()
-                                elif i == 2:
-                                    self.save_game()
                                 elif i == 3:
                                     self.show_options()
                                 elif i == 4:
@@ -783,7 +781,7 @@ class GameVsComputer:
 
         if self.victory_player == 1:
             victory_font = pygame.font.SysFont(None, 70)
-            victory_text = "Joueur 1 a gagné !"
+            victory_text = "Le Joueur 1 a gagné !"
             label = victory_font.render(victory_text, True, (0, 0, 0))
             label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 250))
             self.screen.blit(label, label_rect)
@@ -850,9 +848,6 @@ class GameVsComputer:
         self.positions_clics = []
         self.pawn_per_player = 5
         self.number_pawn_delte = {1: 0, 2: 0}
-
-    def save_game(self):
-        pass
 
     def show_options(self):
         options_instance = options.Options(self.screen, self.screen.get_width(), self.screen.get_height())
