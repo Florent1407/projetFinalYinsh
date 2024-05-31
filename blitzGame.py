@@ -80,7 +80,6 @@ class blitzGame:
         self.game_over = False
         self.victory_player = 0
 
-
     def play_game_music(self):
         pygame.mixer.music.stop()
         pygame.mixer.music.set_volume(self.volume)
@@ -235,7 +234,6 @@ class blitzGame:
                             pygame.draw.circle(self.screen, self.color_player_2, (x, y), radius_marker, marker_thickness)
                             pygame.draw.circle(self.screen, self.color_player_2, (x, y), pawn_ray, pawn_thickness)
 
-
     def place_markers_on_board(self):
         row,cols=self.clic_value
         if self.pawn_on_board[self.current_player] < self.pawn_per_player:
@@ -288,8 +286,7 @@ class blitzGame:
                 self.boardList[row_marker][cols_marker] = marker
                 self.return_marker_vertical_high(row, cols, row_marker, cols_marker)
                 self.alignment_verification()
-                self.current_player = self.current_player % 2 + 1
-                
+                self.current_player = self.current_player % 2 + 1            
 
     def check_vertical_bottom(self,row,cols,row_marker,cols_marker):
         marker=self.current_player+4
@@ -326,7 +323,6 @@ class blitzGame:
                     self.alignment_verification()
                     self.current_player = self.current_player%2+1
                     
-
     def check_diagonal_right_high(self, row, cols, row_marker, cols_marker):
         if abs(row - row_marker) != abs(cols - cols_marker):
             return
@@ -678,8 +674,6 @@ class blitzGame:
                 alignment = 0
                 coords_alignment = []
 
-        
-
     def alignment_diagonal_right_to_left(self):
         marker_current_player = self.current_player + 4
         marker_other_player = 5 if self.current_player % 2 == 0 else 6
@@ -822,29 +816,7 @@ class blitzGame:
         menu_instance.run()
         options_instance = options.Options(self.screen, self.screen_width, self.screen_height)
         self.volume = options_instance.get_volume()
-        pass
-
-    def draw_cells(self):
-        radius_circle = 15
-        circle_thickness = 4
-        none_color = (255, 0, 0)  
-        zero_color = (0, 255, 0)  
-
-        index_position = 0
-
-        for row in self.boardList:
-            for cell in row:
-                if index_position >= len(self.positions_clics):
-                    break
-
-                x, y = self.positions_clics[index_position]
-
-                if cell is None:
-                    pygame.draw.circle(self.screen, none_color, (x, y), radius_circle, circle_thickness)
-                elif cell == 0:
-                    pygame.draw.circle(self.screen, zero_color, (x, y), radius_circle, circle_thickness)
-
-                index_position += 1     
+        pass 
 
     def start(self):
         self.play_game_music()

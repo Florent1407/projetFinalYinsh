@@ -81,6 +81,10 @@ class GameVsComputer:
         self.number_pawn_delte={1: 0, 2: 0}
         self.game_over = False
         self.victory_player = 0
+        self.detected_multiple_alignements = False
+        self.choise_alignement = False
+        self.multiple1=[]
+        self.multiple2=[]
 
     def play_game_music(self):
         pygame.mixer.music.stop()
@@ -121,7 +125,7 @@ class GameVsComputer:
         pygame.draw.rect(self.screen, (0, 0, 0), (300, 150, 600, 300), 10)
 
         pause_font = pygame.font.SysFont(None, 40)
-        menu_items = ["Reprendre le jeu", "Recommencer la partie", "Sauvegarder la partie", "Options", "Menu principal"]
+        menu_items = ["Reprendre le jeu", "Recommencer la partie", "Options", "Menu principal"]
         for i, item in enumerate(menu_items):
             pygame.draw.rect(self.screen, (255, 255, 255), (400, 180 + i * 50, 400, 40))
             pygame.draw.rect(self.screen, (0, 0, 0), (400, 180 + i * 50, 400, 40), 3)
@@ -147,14 +151,14 @@ class GameVsComputer:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     x, y = event.pos
-
                     if self.pause_button_rect.collidepoint(x, y):
                         self.paused = not self.paused
                     elif not self.paused:
-                        if self.pawn_delet:
-                            self.delete_pawns(x, y)
-                        else:
-                            self.find_clicked_cell(x, y)
+                        self.find_clicked_cell(x, y)
+                    elif self.pawn_delet:
+                        self.delete_pawns(x, y)
+                    if self.choise_alignement and self.current_player == 1:
+                        self.choise_alignements_destroy(x, y)
 
                     if self.paused:
                         menu_items_rects = [pygame.Rect(400, 180 + i * 50, 400, 40) for i in range(5)]
@@ -170,18 +174,21 @@ class GameVsComputer:
                                 elif i == 4:
                                     self.return_main_menu()
 
-
     def find_clicked_cell(self, x, y):
         hitbox_taille = 20
         for key, value in self.indexPosition.items():
             cell_x, cell_y = key
             if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
-               (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
+                    (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
                 self.clic_value = value
-                if not self.pawn_delet:
-                    self.place_pawn() 
+                if not self.pawn_delet and  not self.choise_alignement:
+                    self.place_pawn()
                     self.place_markers_on_board()
-                    self.displacement()       
+                    self.displacement()
+                elif self.pawn_delet:
+                    self.delete_pawns(x, y)
+                if self.choise_alignement and self.current_player == 1:
+                    self.choise_alignements_destroy(x, y)      
                     
     def draw_pawn(self):
         pawn_ray = 20
@@ -491,7 +498,6 @@ class GameVsComputer:
                     self.alignment_verification()
                     self.current_player = self.current_player % 2 + 1
                     
-
     def displacement (self):
         pawn_marker=self.current_player+2
         row,cols=self.clic_value
@@ -635,8 +641,7 @@ class GameVsComputer:
                     if alignment == 5:
                         self.deleting_player = self.current_player
                         self.pawn_delet = True
-                        self.delte_aligments(coords_alignment)
-                        break
+                        self.delete_alignments(coords_alignment)
                 elif self.boardList[row][col]==0 or self.boardList[row][col] == marker_other_player or self.boardList[row][col] == 1 or self.boardList[row][col]==2:
                     alignment = 0
                     coords_alignment = []
@@ -665,7 +670,7 @@ class GameVsComputer:
                 if alignment == 5:
                     self.deleting_player = self.current_player
                     self.pawn_delet = True
-                    self.delte_aligments(coords_alignment)
+                    self.delete_alignments(coords_alignment)
                     break
             elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
                 alignment = 0
@@ -695,13 +700,13 @@ class GameVsComputer:
                 if alignment == 5:
                     self.deleting_player = self.current_player
                     self.pawn_delet = True
-                    self.delte_aligments(coords_alignment)
+                    self.delete_alignments(coords_alignment)
                     break
             elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
                 alignment = 0
                 coords_alignment = []
 
-    def delte_aligments(self,coords):
+    def delete_alignments(self,coords):
         for x,y in coords:
             self.boardList[x][y]=0
 
@@ -727,6 +732,183 @@ class GameVsComputer:
                             self.display_winner()
                         self.pawn_delet = False
                         break
+
+    def multiple_alignements(self):
+        self.check_alignemente_vertical_and_diagonal_one()
+        self.check_alignemente_vertical_and_diagonal_two()
+        self.alignment_diagonal_multiple()
+        if self.choise_alignement==False:
+            self.alignment_verification()
+
+    def choise_alignements_destroy(self,v,w):
+        coords_delete1 = []
+        coords_delete2 = []
+        if not self.choise_alignement:
+            return
+        hitbox_taille = 10
+        for key, value in self.indexPosition.items():
+            cell_x, cell_y = key
+            if (cell_x - hitbox_taille < v < cell_x + hitbox_taille) and \
+                (cell_y - hitbox_taille < w < cell_y + hitbox_taille):
+                row, col = value
+                for x, y in self.multiple1:
+                    if x==row and y==col:
+                        coords_delete1.append((x, y))
+                for i, j in self.multiple2:
+                    if i==row and j==col:
+                        coords_delete2.append((i, j))
+            if len(coords_delete1) == 1 and len(coords_delete2) == 0:
+                coords_delete1=self.multiple1
+                self.delete_alignments(coords_delete1)
+                self.choise_alignement = False
+                self.deleting_player = self.current_player%2+1
+                self.pawn_delet = True
+                self.multiple1 = []
+                self.multiple2 = []
+                
+            elif len(coords_delete1) == 0 and len(coords_delete2) == 1:
+                coords_delete2=self.multiple2
+                self.delete_alignments(coords_delete2)
+                self.choise_alignement = False
+                self.deleting_player = self.current_player%2+1
+                self.pawn_delet = True
+                self.multiple1 = []
+                self.multiple2 = []
+                
+
+
+    def check_alignemente_vertical_and_diagonal_one(self):
+        coords_diagonal = []
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        for col in range(11):
+            alignment = 0
+            coords= []
+            for row in range(19):
+                if self.boardList[row][col] == marker_current_player :
+                    alignment += 1
+                    coords.append((row, col))
+                    if alignment == 5:
+                        coords_vertical=coords
+                        coords_diagonal = self.alignment_diag_left_to_right_multiple()
+                        if len(coords_diagonal) == 5 and len(coords_vertical) == 5:
+                            self.multiple1 = coords_diagonal
+                            self.multiple2 = coords_vertical
+                            self.choise_alignement = True
+                            self.detected_multiple_alignements = True
+                        
+                elif self.boardList[row][col] in [0, marker_other_player, 1, 2]:
+                    alignment = 0
+                    coords_vertical = []
+                
+
+    def alignment_diag_left_to_right_multiple(self):
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        max_rows = 19
+        max_columns = 11
+        coords = []
+
+        for start_row in range(max_rows):
+            result = self.check_diagonal_left_to_right_for_multiple_alignements(start_row, 0, marker_current_player, marker_other_player, max_rows, max_columns)
+            if result:
+                coords = result
+
+        for start_col in range(1, max_columns):
+            result = self.check_diagonal_left_to_right_for_multiple_alignements(0, start_col, marker_current_player, marker_other_player, max_rows, max_columns)
+            if result:
+                coords = result
+        return coords if coords else []
+
+    def check_diagonal_left_to_right_for_multiple_alignements(self, start_row, start_col, marker_current_player, marker_other_player, max_rows, max_columns):
+        alignment = 0
+        coords_alignment = []
+
+        step_limit = min(max_rows - start_row, max_columns - start_col)
+        for step in range(step_limit):
+            i, j = start_row + step, start_col + step
+            if self.boardList[i][j] == marker_current_player:
+                alignment += 1
+                coords_alignment.append((i, j))
+                if alignment == 5:
+                    return coords_alignment
+            elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
+                alignment = 0
+                coords_alignment = []
+
+        return []
+
+    def check_alignemente_vertical_and_diagonal_two(self):
+        coords_diagonal = []
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        for col in range(11):
+            alignment = 0
+            coords_vertical = []
+            for row in range(19):
+                if self.boardList[row][col] == marker_current_player:
+                    alignment += 1
+                    coords_vertical.append((row, col))
+                    if alignment == 5:
+                        coords_diagonal = self.alignment_diagonal_right_to_left_multiple()
+                        if len(coords_diagonal) == 5 and len(coords_vertical) == 5:
+                            self.multiple1 = coords_diagonal
+                            self.multiple2 = coords_vertical
+                            self.choise_alignement = True
+                            self.detected_multiple_alignements = True
+                            break
+                        
+                elif self.boardList[row][col] in [0, marker_other_player, 1, 2]:
+                    alignment = 0
+                    coords_vertical = []
+                
+
+    def check_diagonal_right_to_left_multiple_alignements(self, start_row, start_col, marker_current_player, marker_other_player, max_rows, max_columns):
+        alignment = 0
+        coords_alignment = []
+
+        step_limit = min(max_rows - start_row, start_col + 1)
+        for step in range(step_limit):
+            i, j = start_row + step, start_col - step
+            if self.boardList[i][j] == marker_current_player:
+                alignment += 1
+                coords_alignment.append((i, j))
+                if alignment == 5:
+                    return coords_alignment
+            elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
+                alignment = 0
+                coords_alignment = []
+
+        return []
+
+    def alignment_diagonal_right_to_left_multiple(self):
+        marker_current_player = self.current_player + 4
+        marker_other_player = 5 if self.current_player % 2 == 0 else 6
+        max_rows = 19
+        max_columns = 11
+        coords = []
+
+        for start_row in range(max_rows):
+            result = self.check_diagonal_right_to_left_multiple_alignements(start_row, max_columns - 1, marker_current_player, marker_other_player, max_rows, max_columns)
+            if result:
+                coords = result
+
+        for start_col in range(max_columns - 1):
+            result = self.check_diagonal_right_to_left_multiple_alignements(0, start_col, marker_current_player, marker_other_player, max_rows, max_columns)
+            if result:
+                coords = result
+
+        return coords if coords else []
+
+    def alignment_diagonal_multiple(self):
+        coords1 = self.alignment_diag_left_to_right_multiple()
+        coords2 = self.alignment_diagonal_right_to_left_multiple()
+        if coords1 and len(coords1) == 5 and coords2 and len(coords2) == 5:
+            self.multiple1 = coords1
+            self.multiple2 = coords2
+            self.choise_alignement = True
+            self.detected_multiple_alignements = True
+
 
     def draw_remaining_pions(self):
         pawn_radius = 15
@@ -859,29 +1041,7 @@ class GameVsComputer:
         menu_instance.run()
         options_instance = options.Options(self.screen, self.screen_width, self.screen_height)
         self.volume = options_instance.get_volume()
-        pass
-
-    def draw_cells(self):
-        radius_circle = 15
-        circle_thickness = 4
-        none_color = (255, 0, 0)  
-        zero_color = (0, 255, 0)  
-
-        index_position = 0
-
-        for row in self.boardList:
-            for cell in row:
-                if index_position >= len(self.positions_clics):
-                    break
-
-                x, y = self.positions_clics[index_position]
-
-                if cell is None:
-                    pygame.draw.circle(self.screen, none_color, (x, y), radius_circle, circle_thickness)
-                elif cell == 0:
-                    pygame.draw.circle(self.screen, zero_color, (x, y), radius_circle, circle_thickness)
-
-                index_position += 1   
+        pass 
 
     def draw_rings(self):
         ring_radius = 30
@@ -987,7 +1147,6 @@ class GameVsComputer:
             self.pawn_delet = False
             self.current_player = 1
 
-
     def start(self):
         self.play_game_music()
         pause_font = pygame.font.SysFont(None, 30)
@@ -1021,7 +1180,3 @@ class GameVsComputer:
 
     def run(self):
         self.start()
-
-if __name__ == "__main__":
-    game = GameVsComputer()
-    game.run()

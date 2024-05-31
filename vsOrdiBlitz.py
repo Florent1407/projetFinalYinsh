@@ -151,9 +151,6 @@ class GameVsComputerBlitz:
                     if self.pause_button_rect.collidepoint(x, y):
                         self.paused = not self.paused
                     elif not self.paused:
-                        if self.pawn_delet:
-                            self.delete_pawns(x, y)
-                        else:
                             self.find_clicked_cell(x, y)
 
                     if self.paused:
@@ -169,7 +166,6 @@ class GameVsComputerBlitz:
                                     self.show_options()
                                 elif i == 4:
                                     self.return_main_menu()
-
 
     def find_clicked_cell(self, x, y):
         hitbox_taille = 20
@@ -491,7 +487,6 @@ class GameVsComputerBlitz:
                     self.alignment_verification()
                     self.current_player = self.current_player % 2 + 1
                     
-
     def displacement (self):
         pawn_marker=self.current_player+2
         row,cols=self.clic_value
@@ -708,29 +703,6 @@ class GameVsComputerBlitz:
         for x,y in coords:
             self.boardList[x][y]=0
 
-    def delete_pawns(self, x, y):
-        if not self.pawn_delet:
-            return
-        elif self.deleting_player == 2:
-            while self.pawn_delet:
-                self.computer_deletepawn()
-            self.pawn_delet = False
-        else:
-            hitbox_taille = 20
-            for key, value in self.indexPosition.items():
-                cell_x, cell_y = key
-                if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
-                (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
-                    row, col = value
-                    if self.boardList[row][col] == self.deleting_player:
-                        self.boardList[row][col] = 0
-                        self.number_pawn_delte[self.deleting_player] += 1
-                        if self.number_pawn_delte[self.deleting_player] == 3:
-                            self.victory_player = 1
-                            self.display_winner()
-                        self.pawn_delet = False
-                        break
-
     def draw_remaining_pions(self):
         pawn_radius = 15
         pawn_gap = 20
@@ -851,29 +823,7 @@ class GameVsComputerBlitz:
         menu_instance.run()
         options_instance = options.Options(self.screen, self.screen_width, self.screen_height)
         self.volume = options_instance.get_volume()
-        pass
-
-    def draw_cells(self):
-        radius_circle = 15
-        circle_thickness = 4
-        none_color = (255, 0, 0)  
-        zero_color = (0, 255, 0)  
-
-        index_position = 0
-
-        for row in self.boardList:
-            for cell in row:
-                if index_position >= len(self.positions_clics):
-                    break
-
-                x, y = self.positions_clics[index_position]
-
-                if cell is None:
-                    pygame.draw.circle(self.screen, none_color, (x, y), radius_circle, circle_thickness)
-                elif cell == 0:
-                    pygame.draw.circle(self.screen, zero_color, (x, y), radius_circle, circle_thickness)
-
-                index_position += 1   
+        pass  
 
     def Computers(self):
         deplacement = False
@@ -981,7 +931,3 @@ class GameVsComputerBlitz:
 
     def run(self):
         self.start()
-
-if __name__ == "__main__":
-    game = GameVsComputerBlitz()
-    game.run()

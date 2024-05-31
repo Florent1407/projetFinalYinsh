@@ -1,6 +1,5 @@
 import pygame
 import math
-import Game
 
 class Board:
     def __init__(self, width, height):
@@ -50,11 +49,3 @@ class Board:
                 end_point = (x + 45 * math.cos(2 * math.pi / 6 * (i + 3) + math.pi/6),
                              y + 45 * math.sin(2 * math.pi / 6 * (i + 3) + math.pi/6))
                 pygame.draw.line(screen, color_line, start_point, end_point, 3)
-
-    def reset_board(self):
-        self.points.clear()
-        self.place_points()
-
-if __name__ == "__main__":
-    game = Game()
-    game.start()
