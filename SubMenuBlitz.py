@@ -1,14 +1,14 @@
 import pygame
 import os
-from Game import Game
-from vsOrdi import GameVsComputer
+import blitzGame
+from vsOrdiBlitz import GameVsComputerBlitz
 
-class SubMenu:
+class SubMenuBlitz:
     def __init__(self, window, width, height):
         self.window = window
         self.width = width
         self.height = height
-        self.background_image = pygame.image.load(os.path.join("images", "fondmode.jpg"))
+        self.background_image = pygame.image.load(os.path.join("images", "fondblitzmenu.jpg"))
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
         self.font = pygame.font.Font(None, 36)
 
@@ -31,12 +31,11 @@ class SubMenu:
         if button_rect.collidepoint(mouse):
             pygame.draw.rect(self.window, border_color, button_rect, 3, border_radius=radius)
             if click[0] == 1 and action is not None:
-                if action == "local":
-                    game_instance = Game()
+                if action == "blitz":
+                    game_instance = blitzGame.BlitzGame()
                     game_instance.run()
-
-                elif action == "local_ordi":
-                    game_instance = GameVsComputer()
+                elif action == "blitz_ordi":
+                    game_instance = GameVsComputerBlitz()
                     game_instance.run()
 
         self.draw_text(text, (0, 0, 0), x + width / 2, y + height / 2)
@@ -62,9 +61,8 @@ class SubMenu:
     def draw(self):
         self.window.blit(self.background_image, (0, 0))
         self.draw_text("Choisissez votre mode de jeu", (255, 255, 255), self.width // 2, 100)
-        self.draw_button("1 vs 1 local", 100, 480, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="local", radius=10)
-        self.draw_button("Contre l'ordinateur", 700, 480, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="local_ordi", radius=10)
+        self.draw_button("1 vs 1 Blitz", 100, 480, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="blitz", radius=10)
+        self.draw_button("Contre l'ordinateur Blitz", 700, 480, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="blitz_ordi", radius=10)
         if self.draw_return_button(50, 50, 150, 50, (255, 255, 255, 128), (0, 0, 0), action="retour", radius=10):
             return True
         return False
-

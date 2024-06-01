@@ -13,8 +13,7 @@ class NetworkMenu:
     def draw(self):
         self.window.blit(self.background_image, (0, 0))
         self.draw_text("Choisissez une option réseau", (255, 255, 255), self.width // 2, 100)
-        self.draw_button("Créer une partie", 200, 350, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="create", radius=10)
-        self.draw_button("Rejoindre une partie", 600, 350, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="join", radius=10)
+        self.draw_button("Bientôt disponible", 400, 300, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="create", radius=10)
         if self.draw_return_button(50, 50, 150, 50, (255, 255, 255, 128), (0, 0, 0), action="retour", radius=10):
             return True
         return False
@@ -35,14 +34,6 @@ class NetworkMenu:
 
         button_rect = button_surface.get_rect(topleft=(x, y))
         self.window.blit(button_surface, button_rect)
-
-        if button_rect.collidepoint(mouse):
-            pygame.draw.rect(self.window, border_color, button_rect, 3, border_radius=radius)
-            if click[0] == 1 and action is not None:
-                if action == "create":
-                    pass
-                elif action == "join":
-                    pass
 
         self.draw_text(text, (0, 0, 0), x + width / 2, y + height / 2)
 

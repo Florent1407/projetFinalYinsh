@@ -3,7 +3,8 @@ import pygame.mixer
 import sys
 import os
 from options import Options
-    
+from SubMenuBlitz import SubMenuBlitz  
+
 class Menu:
     def __init__(self, window, width, height):
         from NetworkMenu import NetworkMenu
@@ -13,11 +14,13 @@ class Menu:
         self.height = height
         self.background_image = pygame.image.load(os.path.join("images", "fondmenu.jpg"))
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(None, 24) 
         self.submenu = SubMenu(window, width, height)
         self.network_menu = NetworkMenu(window, width, height)
+        self.submenublitz = SubMenuBlitz(window, width, height)  
         self.show_submenu = False
         self.show_network_menu = False
+        self.show_submenublitz = False
         self.options = Options(window, width, height)
         self.show_options = False
         pygame.mixer.init()
@@ -36,7 +39,6 @@ class Menu:
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
 
-
         button_surface = pygame.Surface((width, height), pygame.SRCALPHA)
         pygame.draw.rect(button_surface, background_color, button_surface.get_rect(), border_radius=radius)
 
@@ -46,14 +48,18 @@ class Menu:
         if button_rect.collidepoint(mouse):
             pygame.draw.rect(self.window, border_color, button_rect, 3, border_radius=radius)
             if click[0] == 1 and action is not None:
-                if action == "commencer" and not self.show_submenu:
+                if action == "normal" and not self.show_submenu:
                     self.show_submenu = True
+                elif action == "blitz":
+                    self.show_submenublitz = True  
+                    self.show_submenu = False
+                    self.show_options = False
                 elif action == "reseau":
-                   self.show_network_menu = True
-                   self.show_submenu = False
-                   self.show_options = False
-                elif action == "option":
-                    self.options.show_options = True
+                    self.show_network_menu = True
+                    self.show_submenu = False
+                    self.show_options = False
+                elif action == "options":
+                    self.show_options = True
                 elif action == "quitter":
                     pygame.quit()
                     sys.exit()
@@ -61,11 +67,25 @@ class Menu:
         self.draw_text(text, (0, 0, 0), x + width / 2, y + height / 2)
 
     def run(self):
-        button_width = 250
-        button_height = 50
-        button_padding = 20
-        button_x = (self.width - (button_width * 4 + button_padding * 3)) / 2
-        button_y = self.height - button_height - 50
+        button_width = 130  
+        button_height = 40  
+        button_padding = 10  
+        button_margin_top = 70 
+        title_margin_bottom = 250 
+        title_text = "YINSH"
+        title_color = (255, 255, 255)
+        title_size = 100
+        title_font = pygame.font.Font(None, title_size)
+
+        title_x = self.width // 2
+        title_y = title_margin_bottom + title_size // 2
+
+        button_total_width = button_width * 5 + button_padding * 4
+
+        button_x = (self.width - button_total_width) // 2
+
+        button_y = title_y + title_margin_bottom + button_margin_top
+
         self.play_menu_music()
 
         running = True
@@ -89,33 +109,30 @@ class Menu:
                 pygame.display.update()
                 continue
 
-            if self.options.show_options:
-                self.options.draw()
-                if self.options.show_options == False:
-                    self.options.draw()
-                if self.options.show_options == False:
-                    self.options.show_options = False
+            if self.show_submenublitz:
+                if self.submenublitz.draw():  
+                    self.show_submenublitz = False
                 pygame.display.update()
                 continue
 
-            title_text = "YINSH"
-            title_color = (255, 255, 255)
-            title_color = (255, 255, 255)
-            title_size = 100
-            title_font = pygame.font.Font(None, title_size)
-            title_x = self.width // 2
-            title_y = self.height // 2 - title_size
+            if self.show_options:
+                if self.options.draw():  
+                    self.show_options = False
+                pygame.display.update()
+                continue
 
             title_text_obj = title_font.render(title_text, True, title_color)
             title_text_rect = title_text_obj.get_rect()
             title_text_rect.center = (title_x, title_y)
-            self.window.blit(title_text_obj, title_text_rect)    
-            self.draw_button("Commencer le jeu", button_x, button_y, button_width, button_height, (255, 255, 255, 128), (0, 0, 0), action="commencer", radius=10)
-            self.draw_button("Jeu en réseau", button_x + button_width + button_padding, button_y, button_width, button_height, (255, 255, 255, 128), (0, 0, 0), action="reseau", radius=10)
-            self.draw_button("Options", button_x + 2 * (button_width + button_padding), button_y, button_width, button_height, (255, 255, 255, 128), (0, 0, 0), action="option", radius=10)
-            self.draw_button("Quitter le jeu", button_x + 3 * (button_width + button_padding), button_y, button_width, button_height, (255, 255, 255, 128), (0, 0, 0), action="quitter", radius=10)
+            self.window.blit(title_text_obj, title_text_rect)
 
+            self.draw_button("Normal", button_x, button_y, button_width, button_height, (255, 255, 255, 128), (0, 0, 0), action="normal", radius=10)
+            self.draw_button("Blitz", button_x + button_width + button_padding, button_y, button_width, button_height, (255, 255, 255, 128), (0, 0, 0), action="blitz", radius=10)
+            self.draw_button("Jeu en réseau", button_x + 2 * (button_width + button_padding), button_y, button_width, button_height, (255, 255, 255, 128), (0, 0, 0), action="reseau", radius=10)
+            self.draw_button("Options", button_x + 3 * (button_width + button_padding), button_y, button_width, button_height, (255, 255, 255, 128), (0, 0, 0), action="options", radius=10)
+            self.draw_button("Quitter le jeu", button_x + 4 * (button_width + button_padding), button_y, button_width, button_height, (255, 255, 255, 128), (0, 0, 0), action="quitter", radius=10)
             pygame.display.update()
+
 
 pygame.init()
 

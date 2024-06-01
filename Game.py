@@ -14,8 +14,6 @@ class Game:
         self.board_wallpaper()
         self.board = Board(10.1, 18)
         self.indexPosition = {}
-        self.ecran_largeur = 1200
-        self.ecran_hauteur = 700
         self.position_coordinates = {}
         self.positions_clics = [(559, 141), (638, 138),
                                 (515, 160), (598, 160), (678, 159),
@@ -959,19 +957,19 @@ class Game:
             self.victory_player = 1
 
         victory_font = pygame.font.SysFont(None, 70)
-        victory_text = f"Joueur {self.victory_player} a gagné !"
+        victory_text = f"Joueur {self.current_player % 2 + 1} a gagné !"
         label = victory_font.render(victory_text, True, (0, 0, 0))
         label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 250))
         self.screen.blit(label, label_rect)
 
         x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 150
         y = self.screen_height - (2 * ring_radius + 20)
-        for i in range(self.number_pawn_delte[1]):
+        for i in range(self.number_pawn_delte[2]):
             pygame.draw.circle(self.screen, self.color_player_1, (x + i * (ring_radius + ring_spacing), y - 250), ring_radius, ring_thickness)
 
         x_right = (self.screen_width + (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 355
         y_right = self.screen_height - (2 * ring_radius + 20)
-        for i in range(self.number_pawn_delte[2] - 1, -1, -1):
+        for i in range(self.number_pawn_delte[1] - 1, -1, -1):
             pygame.draw.circle(self.screen, self.color_player_2, (x_right - i * (ring_radius + ring_spacing), y_right - 250), ring_radius, ring_thickness)
 
         button_width = 200
@@ -1034,7 +1032,7 @@ class Game:
         y = self.screen_height - (2 * ring_radius + 20)
 
         for i in range(3):
-            if self.number_pawn_delte[1] >= i + 1:
+            if self.number_pawn_delte[2] >= i + 1:
                 color = self.color_player_1
             else:
                 color = (128, 128, 128)
@@ -1045,7 +1043,7 @@ class Game:
         y = self.screen_height - (2 * ring_radius + 20)
 
         for i in range(2, -1, -1):
-            if self.number_pawn_delte[2] >= i + 1:
+            if self.number_pawn_delte[1] >= i + 1:
                 color = self.color_player_2
             else:
                 color = (128, 128, 128)

@@ -55,17 +55,16 @@ class Options:
         dark_overlay.fill((0, 0, 0))
         self.window.blit(dark_overlay, (0, 0))
 
-        if self.show_options:
-            self.draw_text("Options", (255, 255, 255), self.width // 2, 80, font=self.bold_font)
+        self.draw_text("Options", (255, 255, 255), self.width // 2, 80, font=self.bold_font)
 
-            volume_text_x = self.volume_slider.slider_x + self.volume_slider.slider_width // 2
-            volume_text_y = self.volume_slider.slider_y - 70
-            self.draw_text("Volume Musique", (255, 255, 255), volume_text_x, volume_text_y)
+        volume_text_x = self.volume_slider.slider_x + self.volume_slider.slider_width // 2
+        volume_text_y = self.volume_slider.slider_y - 70
+        self.draw_text("Volume Musique", (255, 255, 255), volume_text_x, volume_text_y)
 
-            self.volume_slider.draw()
-            if self.draw_button("Retour", 50, 50, 150, 50, (255, 255, 255, 128), (0, 0, 0), action="retour", radius=10):
-                self.show_options = False
-                return True
+        self.volume_slider.draw()
+        if self.draw_button("Retour", 50, 50, 150, 50, (255, 255, 255, 128), (0, 0, 0), action="retour", radius=10):
+            self.show_options = False
+            return True
         return False
 
     def run(self):
@@ -75,7 +74,6 @@ class Options:
                 if event.type == pygame.QUIT:
                     running = False
 
-
             self.window.blit(self.background_image, (0, 0))
 
             self.show_options = True
@@ -84,6 +82,7 @@ class Options:
 
             pygame.mixer.music.set_volume(self.volume_slider.volume)
             pygame.display.update()
+
 
 class VolumeSlider:
     def __init__(self, window, width, height):
