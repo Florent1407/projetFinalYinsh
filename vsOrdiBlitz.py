@@ -95,6 +95,45 @@ class GameVsComputerBlitz(Game):
             self.pawn_delet = False
             self.current_player = 1
 
+    def display_winner(self):
+        dark_overlay = pygame.Surface(self.screen.get_size())
+        dark_overlay.set_alpha(128)
+        dark_overlay.fill((0, 0, 0))
+        self.screen.blit(dark_overlay, (0, 0))
+
+        self.screen.blit(self.fond, (0, 0))
+
+        pygame.draw.rect(self.screen, (245, 245, 220), (300, 150, 600, 300))
+        pygame.draw.rect(self.screen, (0, 0, 0), (300, 150, 600, 300), 10)
+
+        if self.current_player == 1:
+            self.victory_player = 2
+        else:
+            self.victory_player = 1
+
+        if self.victory_player == 1:
+            victory_font = pygame.font.SysFont(None, 70)
+            victory_text = "Le Joueur 1 a gagné !"
+            label = victory_font.render(victory_text, True, (0, 0, 0))
+            label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 300))
+            self.screen.blit(label, label_rect)
+
+        elif self.victory_player == 2:
+            victory_font = pygame.font.SysFont(None, 70)
+            victory_text = "L'ordinateur a gagné !"
+            label = victory_font.render(victory_text, True, (0, 0, 0))
+            label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 300))
+            self.screen.blit(label, label_rect)
+
+        button_width = 200
+        button_height = 50
+        button_x = self.screen.get_rect().centerx - button_width * 1.25
+        button_y = 600
+        self.draw_button("Menu principal", button_x, button_y, button_width, button_height, self.return_main_menu)
+        self.draw_button("Rejouer", button_x + button_width * 1.5, button_y, button_width, button_height, self.restart_game)
+
+        pygame.display.flip()
+
     def start(self):
         self.play_game_music()
         pause_font = pygame.font.SysFont(None, 30)
