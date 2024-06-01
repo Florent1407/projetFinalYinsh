@@ -189,6 +189,24 @@ class GameVsComputer:
                     self.delete_pawns(x, y)
                 if self.choise_alignement and self.current_player == 1:
                     self.choise_alignements_destroy(x, y)      
+
+    def draw_remaining_pions(self):
+        pawn_radius = 15
+        pawn_gap = 20
+        column_width = 80
+        column_height = self.screen_height - 100
+        column_x1 = 50
+        column_x2 = self.screen_width - 50 - column_width
+        column_y = 50
+
+        for i in range(1, 3):
+            x = column_x1 if i == 1 else column_x2
+            y = column_y + column_height - (self.pawn_per_player - self.pawn_on_board[i]) * (2 * pawn_gap + 2 * pawn_radius)
+            remaining_pions = self.pawn_per_player - self.pawn_on_board[i]
+
+            for _ in range(remaining_pions):
+                pygame.draw.circle(self.screen, self.color_player_1 if i == 1 else self.color_player_2, (x + column_width // 2, y), pawn_radius)
+                y += 2 * (pawn_radius + pawn_gap)
                     
     def draw_pawn(self):
         pawn_ray = 20
@@ -705,34 +723,6 @@ class GameVsComputer:
             elif self.boardList[i][j] in [0, marker_other_player, 1, 2]:
                 alignment = 0
                 coords_alignment = []
-
-    def delete_alignments(self,coords):
-        for x,y in coords:
-            self.boardList[x][y]=0
-
-    def delete_pawns(self, x, y):
-        if not self.pawn_delet:
-            return
-        elif self.deleting_player == 2:
-            while self.pawn_delet:
-                self.computer_deletepawn()
-            self.pawn_delet = False
-        else:
-            hitbox_taille = 20
-            for key, value in self.indexPosition.items():
-                cell_x, cell_y = key
-                if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
-                (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
-                    row, col = value
-                    if self.boardList[row][col] == self.deleting_player:
-                        self.boardList[row][col] = 0
-                        self.number_pawn_delte[self.deleting_player] += 1
-                        if self.number_pawn_delte[self.deleting_player] == 3:
-                            self.victory_player = 1
-                            self.display_winner()
-                        self.pawn_delet = False
-                        break
-
     def multiple_alignements(self):
         self.check_alignemente_vertical_and_diagonal_one()
         self.check_alignemente_vertical_and_diagonal_two()
@@ -774,8 +764,6 @@ class GameVsComputer:
                 self.pawn_delet = True
                 self.multiple1 = []
                 self.multiple2 = []
-                
-
 
     def check_alignemente_vertical_and_diagonal_one(self):
         coords_diagonal = []
@@ -860,8 +848,7 @@ class GameVsComputer:
                         
                 elif self.boardList[row][col] in [0, marker_other_player, 1, 2]:
                     alignment = 0
-                    coords_vertical = []
-                
+                    coords_vertical = []         
 
     def check_diagonal_right_to_left_multiple_alignements(self, start_row, start_col, marker_current_player, marker_other_player, max_rows, max_columns):
         alignment = 0
@@ -908,26 +895,33 @@ class GameVsComputer:
             self.multiple2 = coords2
             self.choise_alignement = True
             self.detected_multiple_alignements = True
+    def delete_alignments(self,coords):
+        for x,y in coords:
+            self.boardList[x][y]=0
 
+    def delete_pawns(self, x, y):
+        if not self.pawn_delet:
+            return
+        elif self.deleting_player == 2:
+            while self.pawn_delet:
+                self.computer_deletepawn()
+            self.pawn_delet = False
+        else:
+            hitbox_taille = 20
+            for key, value in self.indexPosition.items():
+                cell_x, cell_y = key
+                if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
+                (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
+                    row, col = value
+                    if self.boardList[row][col] == self.deleting_player:
+                        self.boardList[row][col] = 0
+                        self.number_pawn_delte[self.deleting_player] += 1
+                        if self.number_pawn_delte[self.deleting_player] == 3:
+                            self.victory_player = 1
+                            self.display_winner()
+                        self.pawn_delet = False
+                        break
 
-    def draw_remaining_pions(self):
-        pawn_radius = 15
-        pawn_gap = 20
-        column_width = 80
-        column_height = self.screen_height - 100
-        column_x1 = 50
-        column_x2 = self.screen_width - 50 - column_width
-        column_y = 50
-
-        for i in range(1, 3):
-            x = column_x1 if i == 1 else column_x2
-            y = column_y + column_height - (self.pawn_per_player - self.pawn_on_board[i]) * (2 * pawn_gap + 2 * pawn_radius)
-            remaining_pions = self.pawn_per_player - self.pawn_on_board[i]
-
-            for _ in range(remaining_pions):
-                pygame.draw.circle(self.screen, self.color_player_1 if i == 1 else self.color_player_2, (x + column_width // 2, y), pawn_radius)
-                y += 2 * (pawn_radius + pawn_gap)
-    
     def draw_button(self, text, x, y, width, height, action=None):
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()
@@ -975,7 +969,6 @@ class GameVsComputer:
             label_rect = label.get_rect(center=(self.screen.get_rect().centerx, 250))
             self.screen.blit(label, label_rect)
 
-
         x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 150
         y = self.screen_height - (2 * ring_radius + 20)
         for i in range(self.number_pawn_delte[1]):
@@ -986,7 +979,6 @@ class GameVsComputer:
         for i in range(self.number_pawn_delte[2]-1, -1, -1):
             pygame.draw.circle(self.screen, self.color_player_2, (x_right - i * (ring_radius + ring_spacing), y_right - 250), ring_radius, ring_thickness)
 
-
         button_width = 200
         button_height = 50
         button_x = self.screen.get_rect().centerx - button_width * 1.25
@@ -995,6 +987,36 @@ class GameVsComputer:
         self.draw_button("Rejouer", button_x + button_width * 1.5, button_y, button_width, button_height, self.restart_game)
 
         pygame.display.flip()
+    
+    def draw_rings(self):
+        ring_radius = 30
+        ring_thickness = 5
+        ring_spacing = 50
+
+        x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2
+        y = self.screen_height - (2 * ring_radius + 20)
+
+        for i in range(3):
+            if self.number_pawn_delte[1]  >= i + 1:
+                color = self.color_player_1
+            else:
+                color = (128, 128, 128)
+
+            pygame.draw.circle(self.screen, color, (x + i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
+
+        x = (self.screen_width + (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 510
+        y = self.screen_height - (2 * ring_radius + 20)
+
+        for i in range(2, -1, -1):
+            if self.number_pawn_delte[2]  >= i + 1:
+                color = self.color_player_2
+            else:
+                color = (128, 128, 128)
+
+            pygame.draw.circle(self.screen, color, (x - i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
+
+        if self.number_pawn_delte[1] == 3 or self.number_pawn_delte[2] == 3:
+            self.game_over = True
 
     def restart_game(self):
         self.boardList = [[None,None,None,None,0,None,0,None,None,None,None],
@@ -1042,36 +1064,6 @@ class GameVsComputer:
         options_instance = options.Options(self.screen, self.screen_width, self.screen_height)
         self.volume = options_instance.get_volume()
         pass 
-
-    def draw_rings(self):
-        ring_radius = 30
-        ring_thickness = 5
-        ring_spacing = 50
-
-        x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2
-        y = self.screen_height - (2 * ring_radius + 20)
-
-        for i in range(3):
-            if self.number_pawn_delte[1]  >= i + 1:
-                color = self.color_player_1
-            else:
-                color = (128, 128, 128)
-
-            pygame.draw.circle(self.screen, color, (x + i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
-
-        x = (self.screen_width + (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 510
-        y = self.screen_height - (2 * ring_radius + 20)
-
-        for i in range(2, -1, -1):
-            if self.number_pawn_delte[2]  >= i + 1:
-                color = self.color_player_2
-            else:
-                color = (128, 128, 128)
-
-            pygame.draw.circle(self.screen, color, (x - i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
-
-        if self.number_pawn_delte[1] == 3 or self.number_pawn_delte[2] == 3:
-            self.game_over = True
 
     def Computers(self):
         deplacement = False

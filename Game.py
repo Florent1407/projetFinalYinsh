@@ -184,6 +184,24 @@ class Game:
                     self.delete_pawns(x, y)
                 if self.choise_alignement:
                     self.choise_alignements_destroy(x, y)
+                    
+    def draw_remaining_pions(self):
+        pawn_radius = 15
+        pawn_gap = 20
+        column_width = 80
+        column_height = self.screen_height - 100
+        column_x1 = 50
+        column_x2 = self.screen_width - 50 - column_width
+        column_y = 50
+
+        for i in range(1, 3):
+            x = column_x1 if i == 1 else column_x2
+            y = column_y + column_height - (self.pawn_per_player - self.pawn_on_board[i]) * (2 * pawn_gap + 2 * pawn_radius)
+            remaining_pions = self.pawn_per_player - self.pawn_on_board[i]
+
+            for _ in range(remaining_pions):
+                pygame.draw.circle(self.screen, self.color_player_1 if i == 1 else self.color_player_2, (x + column_width // 2, y), pawn_radius)
+                y += 2 * (pawn_radius + pawn_gap)
 
     def draw_pawn(self):
         pawn_ray = 20
@@ -633,7 +651,7 @@ class Game:
                     coords_alignment.append((row, col))
                     if alignment == 5:
                         self.delete_alignments(coords_alignment)
-                        self.deleting_player = self.current_player
+                        self.deleting_player = self.current_player 
                         self.pawn_delet = True
                 elif self.boardList[row][col] in [0, marker_other_player, 1, 2]:
                     alignment = 0
@@ -699,29 +717,6 @@ class Game:
                 alignment = 0
                 coords_alignment = []
 
-    def delete_alignments(self, coords):
-        for x, y in coords:
-            self.boardList[x][y] = 0
-            self.current_player = self.current_player % 2 + 1
-
-    def delete_pawns(self, x, y):
-        if not self.pawn_delet:
-            return
-
-        hitbox_taille = 20
-        for key, value in self.indexPosition.items():
-            cell_x, cell_y = key
-            if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
-                    (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
-                row, col = value
-                if self.boardList[row][col] == self.current_player:
-                    self.boardList[row][col] = 0
-                    self.pawn_delet = False
-                    self.current_player = self.current_player % 2 + 1
-                    print("self.current_player", self.current_player)
-                    self.number_pawn_delte[self.deleting_player] += 1
-                    break
-
     def multiple_alignements(self):
         self.check_alignemente_vertical_and_diagonal_one()
         self.check_alignemente_vertical_and_diagonal_two()
@@ -751,7 +746,7 @@ class Game:
                 coords_delete1=self.multiple1
                 self.delete_alignments(coords_delete1)
                 self.choise_alignement = False
-                self.deleting_player = self.current_player%2+1
+                self.deleting_player = self.current_player
                 self.current_player = self.current_player%2+1                
                 self.pawn_delet = True
                 self.multiple1 = []
@@ -761,7 +756,7 @@ class Game:
                 coords_delete2=self.multiple2
                 self.delete_alignments(coords_delete2)
                 self.choise_alignement = False
-                self.deleting_player = self.current_player%2+1
+                self.deleting_player = self.current_player
                 self.current_player = self.current_player%2+1
                 self.pawn_delet = True
                 self.multiple1 = []
@@ -900,23 +895,58 @@ class Game:
             self.current_player = self.current_player%2+1
             self.detected_multiple_alignements = True
 
-    def draw_remaining_pions(self):
-        pawn_radius = 15
-        pawn_gap = 20
-        column_width = 80
-        column_height = self.screen_height - 100
-        column_x1 = 50
-        column_x2 = self.screen_width - 50 - column_width
-        column_y = 50
+    def delete_alignments(self, coords):
+        for x, y in coords:
+            self.boardList[x][y] = 0
+            self.current_player = self.current_player % 2 + 1
 
-        for i in range(1, 3):
-            x = column_x1 if i == 1 else column_x2
-            y = column_y + column_height - (self.pawn_per_player - self.pawn_on_board[i]) * (2 * pawn_gap + 2 * pawn_radius)
-            remaining_pions = self.pawn_per_player - self.pawn_on_board[i]
+    def delete_pawns(self, x, y):
+        if not self.pawn_delet:
+            return
 
-            for _ in range(remaining_pions):
-                pygame.draw.circle(self.screen, self.color_player_1 if i == 1 else self.color_player_2, (x + column_width // 2, y), pawn_radius)
-                y += 2 * (pawn_radius + pawn_gap)
+        hitbox_taille = 20
+        for key, value in self.indexPosition.items():
+            cell_x, cell_y = key
+            if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
+                    (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
+                row, col = value
+                if self.boardList[row][col] == self.current_player:
+                    self.boardList[row][col] = 0
+                    self.pawn_delet = False
+                    self.current_player = self.current_player % 2 + 1
+                    print("self.current_player", self.current_player)
+                    self.number_pawn_delte[self.deleting_player] += 1
+                    break
+
+    def draw_rings(self):
+        ring_radius = 30
+        ring_thickness = 5
+        ring_spacing = 50
+
+        x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2
+        y = self.screen_height - (2 * ring_radius + 20)
+
+        for i in range(3):
+            if self.number_pawn_delte[2] >= i + 1:
+                color = self.color_player_1
+            else:
+                color = (128, 128, 128)
+
+            pygame.draw.circle(self.screen, color, (x + i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
+
+        x = (self.screen_width + (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 510
+        y = self.screen_height - (2 * ring_radius + 20)
+
+        for i in range(2, -1, -1):
+            if self.number_pawn_delte[1] >= i + 1:
+                color = self.color_player_2
+            else:
+                color = (128, 128, 128)
+
+            pygame.draw.circle(self.screen, color, (x - i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
+
+        if self.number_pawn_delte[1] == 3 or self.number_pawn_delte[2] == 3:
+            self.game_over = True
 
     def draw_button(self, text, x, y, width, height, action=None):
         mouse_pos = pygame.mouse.get_pos()
@@ -1022,36 +1052,6 @@ class Game:
         options_instance = options.Options(self.screen, self.screen_width, self.screen_height)
         self.volume = options_instance.get_volume()
         pass
-
-    def draw_rings(self):
-        ring_radius = 30
-        ring_thickness = 5
-        ring_spacing = 50
-
-        x = (self.screen_width - (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2
-        y = self.screen_height - (2 * ring_radius + 20)
-
-        for i in range(3):
-            if self.number_pawn_delte[2] >= i + 1:
-                color = self.color_player_1
-            else:
-                color = (128, 128, 128)
-
-            pygame.draw.circle(self.screen, color, (x + i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
-
-        x = (self.screen_width + (4 * ring_radius + 3 * ring_spacing) - self.board_width) // 2 + 510
-        y = self.screen_height - (2 * ring_radius + 20)
-
-        for i in range(2, -1, -1):
-            if self.number_pawn_delte[1] >= i + 1:
-                color = self.color_player_2
-            else:
-                color = (128, 128, 128)
-
-            pygame.draw.circle(self.screen, color, (x - i * (ring_radius + ring_spacing), y), ring_radius, ring_thickness)
-
-        if self.number_pawn_delte[1] == 3 or self.number_pawn_delte[2] == 3:
-            self.game_over = True
 
     def start(self):
         self.play_game_music()
