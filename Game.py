@@ -704,6 +704,7 @@ class Game:
     def delete_alignments(self, coords):
         for x, y in coords:
             self.boardList[x][y] = 0
+            self.current_player = self.current_player % 2 + 1
 
     def delete_pawns(self, x, y):
         if not self.pawn_delet:
@@ -715,9 +716,11 @@ class Game:
             if (cell_x - hitbox_taille < x < cell_x + hitbox_taille) and \
                     (cell_y - hitbox_taille < y < cell_y + hitbox_taille):
                 row, col = value
-                if self.boardList[row][col] == self.deleting_player:
+                if self.boardList[row][col] == self.current_player:
                     self.boardList[row][col] = 0
                     self.pawn_delet = False
+                    self.current_player = self.current_player % 2 + 1
+                    print("self.current_player", self.current_player)
                     self.number_pawn_delte[self.deleting_player] += 1
                     break
 
@@ -729,6 +732,7 @@ class Game:
             self.alignment_verification()
 
     def choise_alignements_destroy(self,v,w):
+        
         coords_delete1 = []
         coords_delete2 = []
         if not self.choise_alignement:
@@ -750,6 +754,7 @@ class Game:
                 self.delete_alignments(coords_delete1)
                 self.choise_alignement = False
                 self.deleting_player = self.current_player%2+1
+                self.current_player = self.current_player%2+1                
                 self.pawn_delet = True
                 self.multiple1 = []
                 self.multiple2 = []
@@ -759,6 +764,7 @@ class Game:
                 self.delete_alignments(coords_delete2)
                 self.choise_alignement = False
                 self.deleting_player = self.current_player%2+1
+                self.current_player = self.current_player%2+1
                 self.pawn_delet = True
                 self.multiple1 = []
                 self.multiple2 = []
@@ -781,6 +787,7 @@ class Game:
                             self.multiple1 = coords_diagonal
                             self.multiple2 = coords_vertical
                             self.choise_alignement = True
+                            self.current_player = self.current_player%2+1
                             self.detected_multiple_alignements = True
                         
                 elif self.boardList[row][col] in [0, marker_other_player, 1, 2]:
@@ -840,6 +847,7 @@ class Game:
                             self.multiple1 = coords_diagonal
                             self.multiple2 = coords_vertical
                             self.choise_alignement = True
+                            self.current_player = self.current_player%2+1
                             self.detected_multiple_alignements = True
                             break
                         
@@ -891,6 +899,7 @@ class Game:
             self.multiple1 = coords1
             self.multiple2 = coords2
             self.choise_alignement = True
+            self.current_player = self.current_player%2+1
             self.detected_multiple_alignements = True
 
     def draw_remaining_pions(self):
