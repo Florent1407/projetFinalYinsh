@@ -12,7 +12,6 @@ class NetworkMenu:
 
     def draw(self):
         self.window.blit(self.background_image, (0, 0))
-        self.draw_text("Choisissez une option réseau", (255, 255, 255), self.width // 2, 100)
         self.draw_button("Bientôt disponible", 400, 300, 300, 50, (255, 255, 255, 128), (0, 0, 0), action="create", radius=10)
         if self.draw_return_button(50, 50, 150, 50, (255, 255, 255, 128), (0, 0, 0), action="retour", radius=10):
             return True
